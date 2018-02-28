@@ -1,0 +1,13 @@
+.player-row {
+  .extended-player span {
+    overflow: visible;
+    white-space: normal;
+    font-weight: 300;
+  }
+}
+
+.player-drafted {
+  span {
+    text-decoration: line-through;
+  }
+}

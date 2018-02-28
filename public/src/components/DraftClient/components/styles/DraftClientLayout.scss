@@ -1,0 +1,50 @@
+$app-dark: #21170e;
+$app-light: #fff5ea;
+$app-middle: #F6C28B;
+$app-accent: #5296A5;
+$app-accent-light: #82DDF0;
+
+body {
+  margin: 0;
+  padding: 0;
+  background: white;
+  font-family: 'Roboto', sans-serif;
+}
+
+.draft-container {
+  .top-row {
+    display: flex;
+    flex: 1;
+  }
+
+  .middle-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    .player-searcher {
+      flex: 3;
+    }
+
+    .right-column {
+      flex: 1;
+    }
+  }
+
+  ul {
+    background: $app-light;
+    border: $app-middle .1rem solid;
+  }
+
+  li {
+    color: $app-dark;
+  }
+
+  li:hover {
+    background: $app-accent-light;
+  }
+
+  .player-searcher, .history-list, .roster-list {
+    padding: .3rem;
+  }
+}

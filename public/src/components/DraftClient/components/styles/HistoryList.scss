@@ -1,0 +1,42 @@
+$dark: #00120B;
+$green: #35605A;
+$blue: #6B818C;
+$white: #D8E4FF;
+$highlight: #31E981;
+
+.history-list {
+  ul {
+    padding: 0;
+    margin: 0;
+    background: $white;
+    border: .15rem $dark solid;
+    border-radius: .3rem;
+    list-style: none;
+  }
+
+  .scroll-list {
+    overflow-y: scroll;
+    height: 20rem;
+  }
+
+  li {
+    padding: .3rem;
+    color: $green;
+    font-size: .9rem;
+    cursor: pointer;
+
+    span {
+      padding-right: .5rem;
+    }
+  }
+
+  li:hover {
+    background: $highlight;
+    color: $dark;
+  }
+
+  .selectedPlayerHighlight {
+    background: $blue;
+    color: $white;
+  }
+}

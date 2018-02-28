@@ -1,0 +1,68 @@
+$dark: #00120B;
+$green: #35605A;
+$blue: #6B818C;
+$white: #D8E4FF;
+$highlight: #31E981;
+
+.player-searcher {
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .scroll-list {
+    overflow-y: scroll;
+    height: 20rem;
+  }
+
+  li {
+    padding: .3rem;
+    font-size: .9rem;
+    cursor: pointer;
+
+    span {
+      overflow: hidden;
+      white-space: nowrap;
+      padding-right: .5rem;
+      display: inline-block;
+      text-overflow: ellipsis;
+    }
+
+    .player-id {
+      width: 2.5rem;
+    }
+
+    .rank {
+      width: 1.5rem;
+    }
+
+    .positions {
+      width: 3rem;
+    }
+
+    .player-name {
+      width: 10rem;
+    }
+
+    .mlb-team {
+      width: 3.5rem;
+    }
+  }
+
+  .selected-player-highlight {
+    // background: $blue;
+  }
+
+  .search-filter {
+    display: flex;
+
+    .player-search-box {
+      flex: 1;
+    }
+
+    .position-filter {
+      flex: 1;
+    }
+  }
+}

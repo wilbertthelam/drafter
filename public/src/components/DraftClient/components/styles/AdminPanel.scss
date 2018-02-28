@@ -1,0 +1,60 @@
+$app-dark: #21170e;
+$app-light: #fff5ea;
+$app-middle: #F6C28B;
+$app-accent: #5296A5;
+$app-accent-light: #82DDF0;
+
+.admin-panel {
+  display: flex;
+  flex-direction: row;
+
+  .active-pick {
+    display: flex;
+    flex-direction: column;
+    margin-right: .1rem;
+
+    .round-number {
+      display: flex;
+      background: $app-accent;
+      color: $app-light;
+      font-size: .8rem;
+      height: 1rem;
+      padding: .1rem;
+    }
+
+    .active-pick-body {
+      display: flex;
+
+      > div {
+        padding: .5rem;
+      }
+
+      .picture {
+        flex: 1;
+        border: black 1px dotted;
+      }
+
+      .active-pick-info {
+        flex: 2;
+      }
+
+      .pick-name {
+        font-size: .9rem;
+      }
+
+      .pick-team {
+        font-size: .7rem;
+      }
+    }
+
+    .available-icon {
+      color: green;
+      font-size: .5rem;
+    }
+
+    .offline-icon {
+      color: red;
+      font-size: .5rem;
+    }
+  }
+}
