@@ -138,7 +138,29 @@ class DraftClient extends React.Component {
     });
 
     this.socket.on('toggle_pause_draft_return', (isPaused) => {
-      store.dispatch(playerDrafterActions.pauseDraft(isPaused));
+      store.dispatch(playerDrafterActions.updateDraftPauseState(isPaused));
+    });
+
+    this.socket.on('admin_roll_back_pick_return', (response) => {
+      // MOVE TO function
+      console.log('Update current pick user on first load');
+      store.dispatch(playerDrafterActions.setCurrentPickUserId(response.currentPickUserId));
+
+      console.log('Update draft history on first load');
+      store.dispatch(playerDrafterActions.updateHistory(response.draftHistory));
+
+      console.log('Update ticker on first load');
+      store.dispatch(playerDrafterActions.updateFuturePicks(response.futurePicks));
+
+      console.log('Update roster on first load');
+      store.dispatch(playerDrafterActions.updateUserRoster(response.userRoster));
+
+      console.log('Update if draft is paused or not on first load');
+      store.dispatch(playerDrafterActions.updateDraftPauseState(response.isPaused));
+    });
+
+    this.socket.on('draft_complete', () => {
+      alert('Draft finished');
     });
   }
 

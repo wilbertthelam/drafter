@@ -17,7 +17,10 @@ class AdminPanel extends React.Component {
           <span><FontAwesomeIcon icon={icon} /> </span>
           <span>{pauseText}</span>
         </button>
-        <button><FontAwesomeIcon icon={undoIcon} /> {strings.admin_panel.undo}</button>
+        <button onClick={() => { return this.props.rollbackPick(); }}>
+          <span><FontAwesomeIcon icon={undoIcon} /> </span>
+          <span>{strings.admin_panel.undo}</span>
+        </button>
       </div>
     );
   }
@@ -28,4 +31,5 @@ export default AdminPanel;
 AdminPanel.propTypes = {
   toggleDraft: PropTypes.func.isRequired,
   isPaused: PropTypes.bool.isRequired,
+  rollbackPick: PropTypes.func.isRequired,
 };

@@ -15,10 +15,19 @@ const toggleDraft = (isPaused, socket) => {
   };
 };
 
+const rollbackPick = (socket) => {
+  return () => {
+    socket.emit('admin_roll_back_pick');
+  };
+};
+
 const mapDispatchToProps = (dispatch, socket) => {
   return {
     toggleDraft: (isPaused) => {
       return dispatch(toggleDraft(isPaused, socket.socket));
+    },
+    rollbackPick: () => {
+      return dispatch(rollbackPick(socket.socket));
     },
   };
 };

@@ -21,8 +21,8 @@ class DraftInstance {
     this.previousPickPlayerId = undefined;
     this.previousPickUserId = undefined;
     this.currentPickUserId = undefined;
-    this.currentRound = undefined;
-    this.currentPickNumber = undefined;
+    // this.currentRound = undefined;
+    // this.currentPickNumber = undefined;
     this.futurePicks = this.createFuturePicks();
     this.draftPaused = false;
   }
@@ -43,6 +43,7 @@ class DraftInstance {
       futurePicks: this.createFuturePicks(),
       previousPickRound: this.getPreviousPickRound(),
       previousPickPickNumber: this.getPreviousPickNumber(),
+      draftComplete: this.currentPickIndex >= this.draftOrder.length,
     };
   }
 
@@ -60,12 +61,12 @@ class DraftInstance {
   draftPlayer(playerId, userId) {
     if (this.draftPaused === true) {
       console.log('Drafted paused right now, cannot draft.');
-      return -2;
+      return 'FAIL_DRAFT_PAUSED';
     }
 
     // Check to make sure it is current user's turn
     if (userId !== this.getCurrentUserPick()) {
-      return -1;
+      return 'FAIL_NOT_USER_TURN';
     }
 
     this.updatePrevious(playerId, userId);
@@ -177,22 +178,34 @@ class DraftInstance {
   rollbackPick() {
     return new Promise((resolve, reject) => {
       if (this.currentPickIndex > 0) {
+        console.log('old draft order' + JSON.stringify(this.createFuturePicks()));
         this.currentPickIndex -= 1;
 
-        // Rollback draft history
+        // Rollback draft history by cutting off the first player (most recent)
         const previousPlayer = this.draftHistory.shift();
-        // Rollback future picks
+
+        console.log('current pick index: ' + this.currentPickIndex);
+        console.log('new draft order: ' +  JSON.stringify(this.createFuturePicks()));
+        // Rollback future picks by reinitializing with new currentPickIndex
         this.createFuturePicks();
-        // Rollback user rosters
+
+        // Rollback user rosters by removing player from user roster
         const userRoster = this.userRoster[this.currentPickUserId];
-        _.find(userRoster, (player) => {
+        _.remove(userRoster, (player) => {
           return player.playerId === this.previousPickUserId;
         });
+
         // Rollback current pick userId
         this.currentPickUserId = this.previousPickUserId;
 
         // Rollback picked player
         this.markPlayerAsNotDrafted(previousPlayer.previousPickPlayerId);
+
+        // Clean out previousPickPlayerId and previousPickUserId
+        this.previousPickPlayerId = undefined;
+        this.previousPickUserId = undefined;
+
+        return resolve();
       }
       return reject(new Error('Current pick is already the start.'));
     });
@@ -390,13 +403,18 @@ module.exports = (io) => {
     socket.on('draft_player', (selectedPlayerId) => {
       console.log(userId);
       const roundEventData = draftInstance.draftPlayer(selectedPlayerId, userId);
-      if (roundEventData === -1) {
+      if (roundEventData === 'FAIL_NOT_USER_TURN') {
         // Tell user that you can't draft out of turn
         console.log(`User ${userId} is trying to draft out of turn. BLOCK THIS IN CLIENT DUMBO!`);
-
-        // tell user that draft is over
+      } else if (roundEventData === 'FAIL_DRAFT_PAUSED') {
+        // tell user that draft is currently paused
       } else {
         io.emit('player_drafted', roundEventData);
+
+        // If draft is over, alert the users
+        if (roundEventData.draftComplete) {
+          io.emit('draft_complete', roundEventData);
+        }
       }
     });
 
@@ -453,10 +471,17 @@ module.exports = (io) => {
 
     // Admin socket responsibilities
     socket.on('admin_roll_back_pick', () => {
-      draftInstance.rollbackPick().then((response) => {
-        socket.emit('admin_roll_back_pick_return', response);
+      draftInstance.rollbackPick().then(() => {
+        const response = {
+          draftHistory: draftInstance.getDraftHistory(),
+          futurePicks: draftInstance.getFuturePicks(),
+          userRoster: draftInstance.getUserRoster(userId),
+          currentPickUserId: draftInstance.getCurrentUserPick(),
+          isPaused: draftInstance.getIsPaused(),
+        };
+        io.emit('admin_roll_back_pick_return', response);
       }).catch((error) => {
-        socket.emit('admin_roll_back_pick_return', error);
+        io.emit('admin_roll_back_pick_return', error);
       });
     });
 
