@@ -146,8 +146,10 @@ class DraftClient extends React.Component {
       console.log('Update current pick user on first load');
       store.dispatch(playerDrafterActions.setCurrentPickUserId(response.currentPickUserId));
 
-      console.log('Update draft history on first load');
-      store.dispatch(playerDrafterActions.updateHistory(response.draftHistory));
+      store.dispatch(playerSearcherActions.searchPlayersSuccess(response.players));
+
+      console.log('Remove last player from draft history');
+      store.dispatch(playerDrafterActions.rollbackDraftHistory());
 
       console.log('Update ticker on first load');
       store.dispatch(playerDrafterActions.updateFuturePicks(response.futurePicks));

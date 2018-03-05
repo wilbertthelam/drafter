@@ -170,6 +170,12 @@ const playerSearcher = (state = {}, action) => {
       };
       return Object.assign({}, state, newState);
     }
+    case actions.playerDrafter.ROLLBACK_DRAFT_HISTORY: {
+      const newState = {
+        draftHistory: state.draftHistory.slice(1),
+      }
+      return Object.assign({}, state, newState);
+    }
     default:
       return state;
   }

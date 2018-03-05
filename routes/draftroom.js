@@ -10,8 +10,7 @@ class DraftInstance {
     users,
     draftOrder,
     draftHistory,
-    userRoster,
-  ) {
+    userRoster) {
     this.players = players || [];
     this.users = users || [];
     this.draftOrder = draftOrder || [];
@@ -154,8 +153,7 @@ class DraftInstance {
   createFuturePicks() {
     return this.draftOrder.slice(
       this.currentPickIndex,
-      this.currentPickIndex + 10,
-    );
+      this.currentPickIndex + 10);
   }
 
   getFuturePicks() {
@@ -182,16 +180,15 @@ class DraftInstance {
         this.currentPickIndex -= 1;
 
         // Rollback draft history by cutting off the first player (most recent)
-        const previousPlayer = this.draftHistory.shift();
+        const previousPlayer = this.draftHistory.pop();
 
         console.log('current pick index: ' + this.currentPickIndex);
-        console.log('new draft order: ' +  JSON.stringify(this.createFuturePicks()));
         // Rollback future picks by reinitializing with new currentPickIndex
-        this.createFuturePicks();
+        this.futurePicks = this.createFuturePicks();
+        console.log('new draft order: ' +  JSON.stringify(this.futurePicks));
 
         // Rollback user rosters by removing player from user roster
-        const userRoster = this.userRoster[this.currentPickUserId];
-        _.remove(userRoster, (player) => {
+        _.remove(this.userRoster[this.currentPickUserId], (player) => {
           return player.playerId === this.previousPickUserId;
         });
 
@@ -203,7 +200,7 @@ class DraftInstance {
 
         // Clean out previousPickPlayerId and previousPickUserId
         this.previousPickPlayerId = undefined;
-        this.previousPickUserId = undefined;
+        this.previousPickUserId = this.currentPickIndex < 1 ? this.draftOrder[this.currentPickIndex - 1].userId : undefined;
 
         return resolve();
       }
@@ -283,6 +280,11 @@ const loadPlayers = new Promise((resolve, reject) => {
     }
 
     const rawPlayers = response.body && response.body.data;
+    if (!rawPlayers && response.body && response.body.error) {
+      return reject(response.body.error.originalError.message);
+    } else if (!rawPlayers) {
+      return reject('Uknown error retrieving players');
+    }
     const players = [];
     rawPlayers.forEach((player) => {
       const newPlayer = {
@@ -301,7 +303,11 @@ const loadUsers = new Promise((resolve, reject) => {
     }
 
     const users = response.body && response.body.data;
-
+    if (!users && response.body && response.body.error) {
+      return reject(response.body.error.originalError.message);
+    } else if (!users) {
+      return reject('Uknown error retrieving users');
+    }
     // Add default status field
     const expandedUsers = [];
     users.forEach((user) => {
@@ -313,18 +319,20 @@ const loadUsers = new Promise((resolve, reject) => {
   });
 });
 
-Promise.all([loadPlayers, loadUsers]).then((values) => {
-  const players = values[0];
-  const users = values[1];
+setTimeout(() => {
+  Promise.all([loadPlayers, loadUsers]).then((values) => {
+    const players = values[0];
+    const users = values[1];
+  
+    draftInstance = new DraftInstance(
+      players,
+      users,
+      mockDraftOrder,
+      [],
+      mockUserRoster);
+  });
+}, 1000);
 
-  draftInstance = new DraftInstance(
-    players,
-    users,
-    mockDraftOrder,
-    [],
-    mockUserRoster,
-  );
-});
 
 const forceClientRefresh = (socket) => {
   socket.emit('force_refresh');
@@ -478,6 +486,8 @@ module.exports = (io) => {
           userRoster: draftInstance.getUserRoster(userId),
           currentPickUserId: draftInstance.getCurrentUserPick(),
           isPaused: draftInstance.getIsPaused(),
+          // TODO: just mark player as undrafted
+          players: draftInstance.getPlayers(),
         };
         io.emit('admin_roll_back_pick_return', response);
       }).catch((error) => {

@@ -62,3 +62,9 @@ export const updateDraftPauseState = (isPaused) => {
     isPaused,
   };
 };
+
+export const rollbackDraftHistory = () => {
+  return {
+    type: actions.playerDrafter.ROLLBACK_DRAFT_HISTORY,
+  };
+};
