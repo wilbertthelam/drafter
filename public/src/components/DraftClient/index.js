@@ -30,6 +30,7 @@ const INITIAL_STATE = {
   userRoster: [],
   users: [],
   isPaused: false,
+  currentSelectedUserRosterId: 0,
 };
 
 const fullInitialState = {
@@ -85,6 +86,10 @@ class DraftClient extends React.Component {
       console.log('Update current pick user on first load');
       store.dispatch(playerDrafterActions.setCurrentPickUserId(preloadData.currentPickUserId));
 
+      console.log('Update current user roster id selected on first load (should be the client userId)');
+      store.dispatch(playerDrafterActions
+        .updateCurrentSelectedUserRosterId(store.getState().playerSearcher.userId));
+
       console.log('Update draft history on first load');
       store.dispatch(playerDrafterActions.updateHistory(preloadData.draftHistory));
 
@@ -112,7 +117,10 @@ class DraftClient extends React.Component {
       store.dispatch(playerDrafterActions
         .updateFuturePicks(playerDraftedData.futurePicks));
 
-      this.socket.emit('get_user_roster', userId);
+      if (store.getState().playerSearcher.currentSelectedUserRosterId ===
+        playerDraftedData.previousPickUserId) {
+        store.dispatch(playerDrafterActions.updateUserRoster(playerDraftedData.userRoster));
+      }
 
       // Only updates for non-active users (who are not currently picking)
       if (userId !== playerDraftedData.previousPickUserId) {
@@ -125,16 +133,15 @@ class DraftClient extends React.Component {
 
         store.dispatch(playerDrafterActions
           .updateHistory(historyPlayerData));
-        // store.dispatch(playerDrafterActions.updateUserRosters)
 
         store.dispatch(playerDrafterActions
           .markPlayerAsDrafted(playerDraftedData.previousPickPlayerId));
       }
     });
 
-    this.socket.on('get_user_roster_return', (userRoster) => {
+    this.socket.on('get_user_roster_return', (userRosterData) => {
       store.dispatch(playerDrafterActions
-        .updateUserRoster(userRoster));
+        .updateUserRoster(userRosterData.userRoster));
     });
 
     this.socket.on('toggle_pause_draft_return', (isPaused) => {
@@ -142,23 +149,25 @@ class DraftClient extends React.Component {
     });
 
     this.socket.on('admin_roll_back_pick_return', (response) => {
-      // MOVE TO function
-      console.log('Update current pick user on first load');
-      store.dispatch(playerDrafterActions.setCurrentPickUserId(response.currentPickUserId));
+      if (!response.error) {
+        // MOVE TO function
+        console.log('Update current pick user on pick rollback');
+        store.dispatch(playerDrafterActions.setCurrentPickUserId(response.currentPickUserId));
 
-      store.dispatch(playerSearcherActions.searchPlayersSuccess(response.players));
+        store.dispatch(playerSearcherActions.searchPlayersSuccess(response.players));
 
-      console.log('Remove last player from draft history');
-      store.dispatch(playerDrafterActions.rollbackDraftHistory());
+        console.log('Remove last player from draft history');
+        store.dispatch(playerDrafterActions.rollbackDraftHistory());
 
-      console.log('Update ticker on first load');
-      store.dispatch(playerDrafterActions.updateFuturePicks(response.futurePicks));
+        console.log('Update ticker on pick rollback');
+        store.dispatch(playerDrafterActions.updateFuturePicks(response.futurePicks));
 
-      console.log('Update roster on first load');
-      store.dispatch(playerDrafterActions.updateUserRoster(response.userRoster));
+        console.log('Update roster on pick rollback');
+        store.dispatch(playerDrafterActions.updateUserRoster(response.userRoster));
 
-      console.log('Update if draft is paused or not on first load');
-      store.dispatch(playerDrafterActions.updateDraftPauseState(response.isPaused));
+        console.log('Update if draft is paused or not on pick rollback');
+        store.dispatch(playerDrafterActions.updateDraftPauseState(response.isPaused));
+      }
     });
 
     this.socket.on('draft_complete', () => {

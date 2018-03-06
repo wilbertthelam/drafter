@@ -43,6 +43,7 @@ class DraftInstance {
       previousPickRound: this.getPreviousPickRound(),
       previousPickPickNumber: this.getPreviousPickNumber(),
       draftComplete: this.currentPickIndex >= this.draftOrder.length,
+      userRoster: this.userRoster[this.previousPickUserId],
     };
   }
 
@@ -113,6 +114,7 @@ class DraftInstance {
   }
 
   getCurrentUserPick() {
+    console.log('draft order: ' + JSON.stringify(this.draftOrder));
     return this.draftOrder[this.currentPickIndex] &&
       this.draftOrder[this.currentPickIndex].userId;
   }
@@ -193,6 +195,7 @@ class DraftInstance {
         });
 
         // Rollback current pick userId
+        console.log('NEW current pick index: ' + this.currentPickIndex);
         this.currentPickUserId = this.previousPickUserId;
 
         // Rollback picked player
@@ -200,7 +203,9 @@ class DraftInstance {
 
         // Clean out previousPickPlayerId and previousPickUserId
         this.previousPickPlayerId = undefined;
-        this.previousPickUserId = this.currentPickIndex < 1 ? this.draftOrder[this.currentPickIndex - 1].userId : undefined;
+        this.previousPickUserId = this.currentPickIndex > 0 ?
+          this.draftOrder[this.currentPickIndex - 1].userId :
+          undefined;
 
         return resolve();
       }
@@ -323,7 +328,7 @@ setTimeout(() => {
   Promise.all([loadPlayers, loadUsers]).then((values) => {
     const players = values[0];
     const users = values[1];
-  
+
     draftInstance = new DraftInstance(
       players,
       users,
@@ -428,7 +433,11 @@ module.exports = (io) => {
 
     socket.on('get_user_roster', (requestedUserId) => {
       const roster = draftInstance.getUserRoster(requestedUserId);
-      socket.emit('get_user_roster_return', roster);
+      const userRosterData = {
+        userId: requestedUserId,
+        userRoster: roster,
+      };
+      socket.emit('get_user_roster_return', userRosterData);
     });
 
     socket.on('search_player_by_position', (position) => {
@@ -491,7 +500,10 @@ module.exports = (io) => {
         };
         io.emit('admin_roll_back_pick_return', response);
       }).catch((error) => {
-        io.emit('admin_roll_back_pick_return', error);
+        const wrappedError = {
+          error,
+        };
+        io.emit('admin_roll_back_pick_return', wrappedError);
       });
     });
 

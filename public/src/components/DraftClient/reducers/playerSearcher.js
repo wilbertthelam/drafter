@@ -173,7 +173,13 @@ const playerSearcher = (state = {}, action) => {
     case actions.playerDrafter.ROLLBACK_DRAFT_HISTORY: {
       const newState = {
         draftHistory: state.draftHistory.slice(1),
-      }
+      };
+      return Object.assign({}, state, newState);
+    }
+    case actions.playerDrafter.UPDATE_CURRENT_SELECTED_USER_ROSTER_ID: {
+      const newState = {
+        currentSelectedUserRosterId: action.currentSelectedUserRosterId,
+      };
       return Object.assign({}, state, newState);
     }
     default:

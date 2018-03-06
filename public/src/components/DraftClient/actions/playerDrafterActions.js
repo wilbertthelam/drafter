@@ -49,10 +49,11 @@ export const updateFuturePicks = (futurePicks) => {
   };
 };
 
-export const updateUserRoster = (userRoster) => {
+export const updateUserRoster = (userRoster, userId) => {
   return {
     type: actions.playerDrafter.UPDATE_USER_ROSTER,
     userRoster,
+    userId,
   };
 };
 
@@ -66,5 +67,12 @@ export const updateDraftPauseState = (isPaused) => {
 export const rollbackDraftHistory = () => {
   return {
     type: actions.playerDrafter.ROLLBACK_DRAFT_HISTORY,
+  };
+};
+
+export const updateCurrentSelectedUserRosterId = (currentSelectedUserRosterId) => {
+  return {
+    type: actions.playerDrafter.UPDATE_CURRENT_SELECTED_USER_ROSTER_ID,
+    currentSelectedUserRosterId,
   };
 };

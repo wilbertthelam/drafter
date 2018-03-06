@@ -16,7 +16,7 @@ class RosterList extends React.Component {
 
     if (!rosterList || rosterList.length === 0) {
       rosterList = (
-        <li>{strings.draft_history.default_history_message}</li>
+        <li>{strings.draft_history.default_roster_message}</li>
       );
     }
 
@@ -25,6 +25,7 @@ class RosterList extends React.Component {
         <option
           key={user.id}
           value={user.id}
+          selected={user.id === this.props.currentSelectedUserRosterId}
           onClick={() => { return this.props.selectUserRoster(user.id); }}
         >
           {user.name}
@@ -59,6 +60,7 @@ RosterList.propTypes = {
     team: PropTypes.string,
     email: PropTypes.string,
   })),
+  currentSelectedUserRosterId: PropTypes.number.isRequired,
 };
 
 RosterList.defaultProps = {

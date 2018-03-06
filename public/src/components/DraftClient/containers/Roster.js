@@ -6,11 +6,9 @@ const selectUserRoster = (selectedUserId, socket) => {
   return (dispatch) => {
     if (selectedUserId) {
       socket.emit('get_user_roster', selectedUserId);
-      socket.on('get_user_roster_return', (selectedUserRoster) => {
-        dispatch(playerDrafterActions
-          .updateUserRoster(selectedUserRoster));
-      });
+      return dispatch(playerDrafterActions.updateCurrentSelectedUserRosterId(selectedUserId));
     }
+    return dispatch();
   };
 };
 
@@ -19,6 +17,7 @@ const mapStateToProps = (state) => {
     selectedPlayerId: state.playerSearcher.selectedPlayerId,
     userRoster: state.playerSearcher.userRoster,
     users: state.playerSearcher.users,
+    currentSelectedUserRosterId: state.playerSearcher.currentSelectedUserRosterId,
   };
 };
 
