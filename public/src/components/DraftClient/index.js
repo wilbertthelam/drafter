@@ -163,7 +163,10 @@ class DraftClient extends React.Component {
         store.dispatch(playerDrafterActions.updateFuturePicks(response.futurePicks));
 
         console.log('Update roster on pick rollback');
-        store.dispatch(playerDrafterActions.updateUserRoster(response.userRoster));
+        if (store.getState().playerSearcher.currentSelectedUserRosterId ===
+          response.currentPickUserId) {
+          store.dispatch(playerDrafterActions.updateUserRoster(response.userRoster));
+        }
 
         console.log('Update if draft is paused or not on pick rollback');
         store.dispatch(playerDrafterActions.updateDraftPauseState(response.isPaused));

@@ -89,6 +89,10 @@ class DraftInstance {
     }
   }
 
+  getPreviousPickUserId() {
+    return this.previousPickUserId;
+  }
+
   getUserRoster(userId) {
     return this.userRoster[userId];
   }
@@ -190,9 +194,11 @@ class DraftInstance {
         console.log('new draft order: ' +  JSON.stringify(this.futurePicks));
 
         // Rollback user rosters by removing player from user roster
-        _.remove(this.userRoster[this.currentPickUserId], (player) => {
-          return player.playerId === this.previousPickUserId;
+        const newUserRoster = this.userRoster[this.previousPickUserId];
+        _.remove(newUserRoster, (player) => {
+          return player.playerId === previousPlayer.previousPickPlayerId;
         });
+        this.userRoster[this.previousPickUserId] = newUserRoster;
 
         // Rollback current pick userId
         console.log('NEW current pick index: ' + this.currentPickIndex);
@@ -401,7 +407,7 @@ module.exports = (io) => {
     socket.on('draft_orchestration_preload_success', () => {
       const preloadData = {
         draftHistory: draftInstance.getDraftHistory(),
-        futurePicks: draftInstance.getFuturePicks(),
+        futurePicks: draftInstance.createFuturePicks(),
         userRoster: draftInstance.getUserRoster(userId),
         currentPickUserId: draftInstance.getCurrentUserPick(),
         isPaused: draftInstance.getIsPaused(),
@@ -492,11 +498,12 @@ module.exports = (io) => {
         const response = {
           draftHistory: draftInstance.getDraftHistory(),
           futurePicks: draftInstance.getFuturePicks(),
-          userRoster: draftInstance.getUserRoster(userId),
+          userRoster: draftInstance.getUserRoster(draftInstance.currentPickUserId),
           currentPickUserId: draftInstance.getCurrentUserPick(),
           isPaused: draftInstance.getIsPaused(),
           // TODO: just mark player as undrafted
           players: draftInstance.getPlayers(),
+          previousPickUserId: draftInstance.getPreviousPickUserId(),
         };
         io.emit('admin_roll_back_pick_return', response);
       }).catch((error) => {

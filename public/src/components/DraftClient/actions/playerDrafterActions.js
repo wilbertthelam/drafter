@@ -49,11 +49,10 @@ export const updateFuturePicks = (futurePicks) => {
   };
 };
 
-export const updateUserRoster = (userRoster, userId) => {
+export const updateUserRoster = (userRoster) => {
   return {
     type: actions.playerDrafter.UPDATE_USER_ROSTER,
     userRoster,
-    userId,
   };
 };
 
