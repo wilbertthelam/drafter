@@ -1,235 +1,9 @@
 const express = require('express');
 const request = require('request');
-const _ = require('lodash');
+const debug = require('debug')('drafter');
+const DraftInstance = require('./draftInstance');
 
 const router = express.Router();
-
-class DraftInstance {
-  constructor(
-    players,
-    users,
-    draftOrder,
-    draftHistory,
-    userRoster) {
-    this.players = players || [];
-    this.users = users || [];
-    this.draftOrder = draftOrder || [];
-    this.draftHistory = draftHistory || [];
-    this.userRoster = userRoster;
-    this.currentPickIndex = 0;
-    this.previousPickPlayerId = undefined;
-    this.previousPickUserId = undefined;
-    this.currentPickUserId = undefined;
-    // this.currentRound = undefined;
-    // this.currentPickNumber = undefined;
-    this.futurePicks = this.createFuturePicks();
-    this.draftPaused = false;
-  }
-
-  pauseDraft() {
-    this.draftPaused = true;
-  }
-
-  resumeDraft() {
-    this.draftPaused = false;
-  }
-
-  createPickEvent() {
-    return {
-      previousPickUserId: this.previousPickUserId,
-      previousPickPlayerId: this.previousPickPlayerId,
-      currentPickUserId: this.currentPickUserId,
-      futurePicks: this.createFuturePicks(),
-      previousPickRound: this.getPreviousPickRound(),
-      previousPickPickNumber: this.getPreviousPickNumber(),
-      draftComplete: this.currentPickIndex >= this.draftOrder.length,
-      userRoster: this.userRoster[this.previousPickUserId],
-    };
-  }
-
-  advanceToNextPick() {
-    this.currentPickIndex += 1;
-    this.currentPickUserId = this.getCurrentUserPick();
-    return this.createPickEvent();
-  }
-
-  updatePrevious(playerId, userId) {
-    this.previousPickPlayerId = playerId;
-    this.previousPickUserId = userId;
-  }
-
-  draftPlayer(playerId, userId) {
-    if (this.draftPaused === true) {
-      console.log('Drafted paused right now, cannot draft.');
-      return 'FAIL_DRAFT_PAUSED';
-    }
-
-    // Check to make sure it is current user's turn
-    if (userId !== this.getCurrentUserPick()) {
-      return 'FAIL_NOT_USER_TURN';
-    }
-
-    this.updatePrevious(playerId, userId);
-    this.addPlayerToDraftHistory(playerId, userId);
-    this.addPlayerToUserRoster(playerId, userId);
-    this.markPlayerAsDrafted(playerId);
-    return this.advanceToNextPick();
-  }
-
-  addPlayerToUserRoster(playerId, userId) {
-    const rosterPlayer = {
-      playerId,
-      userId,
-      round: this.getCurrentRound(),
-      pickNumber: this.getCurrentPickNumber(),
-    };
-
-    if (this.getUserRoster(userId)) {
-      this.getUserRoster(userId).push(rosterPlayer);
-    }
-  }
-
-  getPreviousPickUserId() {
-    return this.previousPickUserId;
-  }
-
-  getUserRoster(userId) {
-    return this.userRoster[userId];
-  }
-
-  findPlayer(playerId) {
-    return _.find(this.players, (player) => {
-      return player.id === playerId;
-    });
-  }
-
-  markPlayerAsDrafted(playerId) {
-    const playerToMark = this.findPlayer(playerId);
-    playerToMark.isDrafted = true;
-  }
-
-  markPlayerAsNotDrafted(playerId) {
-    const playerToMark = this.findPlayer(playerId);
-    playerToMark.isDrafted = false;
-  }
-
-  getDraftHistory() {
-    return this.draftHistory;
-  }
-
-  getCurrentUserPick() {
-    console.log('draft order: ' + JSON.stringify(this.draftOrder));
-    return this.draftOrder[this.currentPickIndex] &&
-      this.draftOrder[this.currentPickIndex].userId;
-  }
-
-  getCurrentRound() {
-    return this.draftOrder[this.currentPickIndex] &&
-      this.draftOrder[this.currentPickIndex].round;
-  }
-
-  getCurrentPickNumber() {
-    // console.log(JSON.stringify(this.draftOrder[this.currentPickIndex]));
-    return this.draftOrder[this.currentPickIndex] &&
-      this.draftOrder[this.currentPickIndex].pickNumber;
-  }
-
-  getPreviousPickRound() {
-    return this.draftOrder[this.currentPickIndex - 1] &&
-      this.draftOrder[this.currentPickIndex - 1].round;
-  }
-
-  getPreviousPickNumber() {
-    // console.log(JSON.stringify(this.draftOrder[this.currentPickIndex]));
-    return this.draftOrder[this.currentPickIndex - 1] &&
-      this.draftOrder[this.currentPickIndex - 1].pickNumber;
-  }
-
-  addPlayerToDraftHistory(playerId, userId) {
-    const draftHistoryModel = {
-      previousPickPlayerId: playerId,
-      previousPickUserId: userId,
-      previousPickRound: this.getCurrentRound(),
-      previousPickPickNumber: this.getCurrentPickNumber(),
-    };
-
-    this.draftHistory.push(draftHistoryModel);
-  }
-
-  createFuturePicks() {
-    return this.draftOrder.slice(
-      this.currentPickIndex,
-      this.currentPickIndex + 10);
-  }
-
-  getFuturePicks() {
-    return this.futurePicks;
-  }
-
-  // Expensive call, only return on initial load since it returns all players
-  getPlayers() {
-    return this.players;
-  }
-
-  getUsers() {
-    return this.users;
-  }
-
-  getCurrentPickIndex() {
-    return this.currentPickIndex;
-  }
-
-  rollbackPick() {
-    return new Promise((resolve, reject) => {
-      if (this.currentPickIndex > 0) {
-        console.log('old draft order' + JSON.stringify(this.createFuturePicks()));
-        this.currentPickIndex -= 1;
-
-        // Rollback draft history by cutting off the first player (most recent)
-        const previousPlayer = this.draftHistory.pop();
-
-        console.log('current pick index: ' + this.currentPickIndex);
-        // Rollback future picks by reinitializing with new currentPickIndex
-        this.futurePicks = this.createFuturePicks();
-        console.log('new draft order: ' +  JSON.stringify(this.futurePicks));
-
-        // Rollback user rosters by removing player from user roster
-        const newUserRoster = this.userRoster[this.previousPickUserId];
-        _.remove(newUserRoster, (player) => {
-          return player.playerId === previousPlayer.previousPickPlayerId;
-        });
-        this.userRoster[this.previousPickUserId] = newUserRoster;
-
-        // Rollback current pick userId
-        console.log('NEW current pick index: ' + this.currentPickIndex);
-        this.currentPickUserId = this.previousPickUserId;
-
-        // Rollback picked player
-        this.markPlayerAsNotDrafted(previousPlayer.previousPickPlayerId);
-
-        // Clean out previousPickPlayerId and previousPickUserId
-        this.previousPickPlayerId = undefined;
-        this.previousPickUserId = this.currentPickIndex > 0 ?
-          this.draftOrder[this.currentPickIndex - 1].userId :
-          undefined;
-
-        return resolve();
-      }
-      return reject(new Error('Current pick is already the start.'));
-    });
-  }
-
-  updateUserStatus(userId, status) {
-    const user = this.users[userId];
-    if (user) {
-      user.online = status;
-    }
-  }
-
-  getIsPaused() {
-    return this.draftPaused;
-  }
-}
 
 const mockDraftOrder = [{
   userId: 2,
@@ -282,6 +56,7 @@ const mockUserRoster = {
   5: [],
 };
 
+
 let draftInstance;
 
 const loadPlayers = new Promise((resolve, reject) => {
@@ -294,7 +69,7 @@ const loadPlayers = new Promise((resolve, reject) => {
     if (!rawPlayers && response.body && response.body.error) {
       return reject(response.body.error.originalError.message);
     } else if (!rawPlayers) {
-      return reject('Uknown error retrieving players');
+      return reject(new Error('Unknown error retrieving players'));
     }
     const players = [];
     rawPlayers.forEach((player) => {
@@ -310,14 +85,14 @@ const loadPlayers = new Promise((resolve, reject) => {
 const loadUsers = new Promise((resolve, reject) => {
   request('http://localhost:3000/api/users', { json: true }, (error, response) => {
     if (error) {
-      return reject(error);
+      return reject(new Error(error));
     }
 
     const users = response.body && response.body.data;
     if (!users && response.body && response.body.error) {
       return reject(response.body.error.originalError.message);
     } else if (!users) {
-      return reject('Uknown error retrieving users');
+      return reject(new Error('Unknown error retrieving users'));
     }
     // Add default status field
     const expandedUsers = [];
@@ -340,22 +115,20 @@ setTimeout(() => {
       users,
       mockDraftOrder,
       [],
-      mockUserRoster);
+      mockUserRoster,
+    );
+  }).catch((error) => {
+    debug(`Failed to intialize server data: ${error}`);
   });
 }, 1000);
-
-
-const forceClientRefresh = (socket) => {
-  socket.emit('force_refresh');
-};
 
 // Connections
 module.exports = (io) => {
   io.on('connection', (socket) => {
     // const socketUserId = socket.id;
     if (!(socket.request && socket.request.session && socket.request.session.userId)) {
-      console.log('Error with establishing user connection');
-      forceClientRefresh(socket);
+      debug('Error with establishing user connection');
+      socket.emit('force_refresh');
       return;
     }
     const userId = socket.request.session.userId;
@@ -384,11 +157,11 @@ module.exports = (io) => {
       if (numOfAttempts < 60) {
         setTimeout(() => {
           if (draftInstance) {
-            console.log('sent data');
+            debug('sent data');
             // sendDraftOrchestration();
           } else {
             numOfAttempts += 1;
-            console.log(`Num of retry attempts: ${numOfAttempts}`);
+            debug(`Num of retry attempts: ${numOfAttempts}`);
             draftOrchestrationAttempt();
           }
         }, 1000);
@@ -398,7 +171,7 @@ module.exports = (io) => {
     };
 
     if (draftInstance) {
-      console.log('Sent on first try.');
+      debug('Sent on first try.');
       sendDraftOrchestration();
     } else {
       draftOrchestrationAttempt();
@@ -407,24 +180,24 @@ module.exports = (io) => {
     socket.on('draft_orchestration_preload_success', () => {
       const preloadData = {
         draftHistory: draftInstance.getDraftHistory(),
-        futurePicks: draftInstance.createFuturePicks(),
+        futurePicks: draftInstance.createFuturePicks(draftInstance.getCurrentPickIndex()),
         userRoster: draftInstance.getUserRoster(userId),
         currentPickUserId: draftInstance.getCurrentUserPick(),
         isPaused: draftInstance.getIsPaused(),
       };
-      console.log(`userId: ${userId} has successfully downloaded setup data`);
-      console.log(`userId that is sent to client: ${userId}`);
+      debug(`userId: ${userId} has successfully downloaded setup data`);
+      debug(`userId that is sent to client: ${userId}`);
       socket.emit('draft_orchestration_load', preloadData);
       io.emit('user_status', { userId, online: true });
     });
 
     // Client drafts a player
     socket.on('draft_player', (selectedPlayerId) => {
-      console.log(userId);
+      debug(userId);
       const roundEventData = draftInstance.draftPlayer(selectedPlayerId, userId);
       if (roundEventData === 'FAIL_NOT_USER_TURN') {
         // Tell user that you can't draft out of turn
-        console.log(`User ${userId} is trying to draft out of turn. BLOCK THIS IN CLIENT DUMBO!`);
+        debug(`User ${userId} is trying to draft out of turn. BLOCK THIS IN CLIENT DUMBO!`);
       } else if (roundEventData === 'FAIL_DRAFT_PAUSED') {
         // tell user that draft is currently paused
       } else {
@@ -516,24 +289,24 @@ module.exports = (io) => {
 
     socket.on('toggle_pause_draft', (isPaused) => {
       if (isPaused) {
-        console.log('Draft paused');
+        debug('Draft paused.');
         draftInstance.pauseDraft();
       } else {
-        console.log('Draft resumed');
+        debug('Draft resumed.');
         draftInstance.resumeDraft();
       }
       io.emit('toggle_pause_draft_return', isPaused);
     });
 
     // Heartbeat sync check
-    socket.on('heartbeat', (data) => {
-
-    });
+    // socket.on('heartbeat', (data) => {
+    //
+    // });
 
     socket.on('disconnect', () => {
       draftInstance.updateUserStatus(userId, false);
       io.emit('user_status', { userId, online: false });
-      console.log(`user ${socket.id} disconnected`);
+      debug(`User ${socket.id} disconnected`);
     });
   });
 

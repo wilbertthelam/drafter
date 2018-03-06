@@ -76,6 +76,7 @@ const mapStateToProps = (state) => {
     currentPickUserId: state.playerSearcher.currentPickUserId,
     extendedPlayer: state.playerSearcher.extendedPlayer,
     isPaused: state.playerSearcher.isPaused,
+    filterDrafted: state.playerSearcher.filterDrafted,
   };
 };
 
@@ -95,6 +96,9 @@ const mapDispatchToProps = (dispatch, socket) => {
     },
     onPlayerSearchByPosition: (position) => {
       return dispatch(searchPlayerByPosition(position, socket.socket));
+    },
+    toggleDraftedFilter: () => {
+      return dispatch(playerSearcherActions.toggleDraftedFilter());
     },
   };
 };

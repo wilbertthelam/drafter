@@ -182,6 +182,12 @@ const playerSearcher = (state = {}, action) => {
       };
       return Object.assign({}, state, newState);
     }
+    case actions.playerSearcher.TOGGLE_DRAFTED_FILTER: {
+      const newState = {
+        filterDrafted: !state.filterDrafted,
+      };
+      return Object.assign({}, state, newState);
+    }
     default:
       return state;
   }

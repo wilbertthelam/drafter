@@ -14,6 +14,9 @@ const strings = {
     outfielder: 'OF',
     designated_hitter: 'DH',
   },
+  filter_drafted: {
+    hide_drafted: 'hide drafted',
+  },
   draft_button: {
     draft: 'draft',
   },

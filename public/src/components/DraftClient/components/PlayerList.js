@@ -9,11 +9,7 @@ class PlayerList extends React.Component {
   constructor() {
     super();
     this.onSearch = this.onSearch.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
-  }
-
-  componentDidMount() {
-    // this.props.onPlayerSearch();
+    // this.componentDidMount = this.componentDidMount.bind(this);
   }
 
   onSearchDebounced(event) {
@@ -40,7 +36,13 @@ class PlayerList extends React.Component {
     }
 
     if (this.props.players && this.props.players.length > 0) {
-      playerListDisplay = this.props.players.map((player) => {
+      let filteredPlayers = this.props.players;
+      if (this.props.filterDrafted) {
+        filteredPlayers = this.props.players.filter((player) => {
+          return player.isDrafted === false;
+        });
+      }
+      playerListDisplay = filteredPlayers.map((player) => {
         return (
           <PlayerRow
             key={player.id}
@@ -68,7 +70,11 @@ class PlayerList extends React.Component {
             onInput={this.onSearch}
             value={this.props.playerSearchString}
           />
-          <PositionFilter filterBy={this.props.onPlayerSearchByPosition} />
+          <PositionFilter
+            filterBy={this.props.onPlayerSearchByPosition}
+            toggleDraftedFilter={this.props.toggleDraftedFilter}
+            filterDrafted={this.props.filterDrafted}
+          />
         </div>
         <ul className="scroll-list">
           {playerListDisplay}
@@ -93,6 +99,7 @@ PlayerList.propTypes = {
     positions: PropTypes.string,
     adp: PropTypes.string,
     notes: PropTypes.string,
+    isDrafted: PropTypes.bool,
   }).isRequired).isRequired,
   selectedPlayerId: PropTypes.number.isRequired,
   onPlayerSelect: PropTypes.func.isRequired,
@@ -106,6 +113,8 @@ PlayerList.propTypes = {
   // TODO: specify
   extendedPlayer: PropTypes.object.isRequired,
   isPaused: PropTypes.bool.isRequired,
+  toggleDraftedFilter: PropTypes.func.isRequired,
+  filterDrafted: PropTypes.bool.isRequired,
 };
 
 export default PlayerList;

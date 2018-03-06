@@ -4,6 +4,7 @@ module.exports = {
       "prefer-destructuring": "off",
       "arrow-body-style": ["error", "always"],
       "newline-per-chained-call": "off",
+      "consistent-return": "off",
       "import/no-extraneous-dependencies": "off",
       "react/jsx-filename-extension": "off",
       "react/prefer-stateless-function": "off",

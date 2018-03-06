@@ -41,3 +41,9 @@ export const loadExtendedPlayer = (playerExtended) => {
     playerExtended,
   };
 };
+
+export const toggleDraftedFilter = () => {
+  return {
+    type: actions.playerSearcher.TOGGLE_DRAFTED_FILTER,
+  };
+};

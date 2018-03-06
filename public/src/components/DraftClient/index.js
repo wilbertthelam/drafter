@@ -31,6 +31,7 @@ const INITIAL_STATE = {
   users: [],
   isPaused: false,
   currentSelectedUserRosterId: 0,
+  filterDrafted: true,
 };
 
 const fullInitialState = {
@@ -66,7 +67,6 @@ class DraftClient extends React.Component {
     });
 
     this.socket.on('connection_verified', (userId) => {
-      console.log('Handshake complete.');
       console.log(`Current userId is: ${userId}`);
       store.dispatch(playerDrafterActions.setUserId(userId));
     });
@@ -154,6 +154,7 @@ class DraftClient extends React.Component {
         console.log('Update current pick user on pick rollback');
         store.dispatch(playerDrafterActions.setCurrentPickUserId(response.currentPickUserId));
 
+        console.log('Update players with the player marked as undrafted');
         store.dispatch(playerSearcherActions.searchPlayersSuccess(response.players));
 
         console.log('Remove last player from draft history');

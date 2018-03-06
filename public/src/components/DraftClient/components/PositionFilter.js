@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import strings from './../constants/strings';
 import './styles/PositionFilter.scss';
 
-const PositionFilter = ({ filterBy }) => {
+const PositionFilter = ({ filterBy, toggleDraftedFilter, filterDrafted }) => {
   return (
     <ul className="position-filter">
       <li onClick={() => filterBy(strings.position_filter.all)}>{strings.position_filter.all}</li>
@@ -16,6 +16,10 @@ const PositionFilter = ({ filterBy }) => {
       <li onClick={() => filterBy(strings.position_filter.third_baseman)}>{strings.position_filter.third_baseman}</li>
       <li onClick={() => filterBy(strings.position_filter.outfielder)}>{strings.position_filter.outfielder}</li>
       <li onClick={() => filterBy(strings.position_filter.designated_hitter)}>{strings.position_filter.designated_hitter}</li>
+      <li>
+        <input type="checkbox" checked={filterDrafted} onClick={toggleDraftedFilter} />
+        {strings.filter_drafted.hide_drafted}
+      </li>
     </ul>
   );
 };
@@ -24,4 +28,6 @@ export default PositionFilter;
 
 PositionFilter.propTypes = {
   filterBy: PropTypes.func.isRequired,
+  toggleDraftedFilter: PropTypes.func.isRequired,
+  filterDrafted: PropTypes.bool.isRequired,
 };
