@@ -7,7 +7,7 @@
 3. To run server, run ```yarn start```. React will build on save + refresh, Node server chnages require reboot (ctrl+c).
 
 # test accounts
-test@test.com
-test2@test.com (currently active)
-test3@test.com (currently active)
+test@test.com<br />
+test2@test.com (currently active)<br />
+test3@test.com (currently active)<br />
 password: test
