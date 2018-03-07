@@ -17,8 +17,15 @@ const PositionFilter = ({ filterBy, toggleDraftedFilter, filterDrafted }) => {
       <li onClick={() => filterBy(strings.position_filter.outfielder)}>{strings.position_filter.outfielder}</li>
       <li onClick={() => filterBy(strings.position_filter.designated_hitter)}>{strings.position_filter.designated_hitter}</li>
       <li>
-        <input type="checkbox" checked={filterDrafted} onClick={toggleDraftedFilter} />
-        {strings.filter_drafted.hide_drafted}
+        <label htmlFor="hide-drafted">
+          <input
+            id="hide-drafted"
+            type="checkbox"
+            checked={filterDrafted}
+            onClick={toggleDraftedFilter}
+          />
+          {strings.filter_drafted.hide_drafted}
+        </label>
       </li>
     </ul>
   );

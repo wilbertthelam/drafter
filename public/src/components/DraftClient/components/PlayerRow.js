@@ -50,6 +50,31 @@ const PlayerRow = ({
     className += ' player-drafted';
   }
 
+  let positionSpecificStats;
+  if (player.positions.includes('SP') || player.positions.includes('RP')) {
+    positionSpecificStats = (
+      <span>
+        <span className="mlb_team">IP: {player.IP}</span>
+        <span className="mlb_team">W: {player.W}</span>
+        <span className="mlb_team">K: {player.K}</span>
+        <span className="mlb_team">SV: {player.SV}</span>
+        <span className="mlb_team">ERA: {player.ERA}</span>
+        <span className="mlb_team">WHIP: {player.WHIP}</span>
+      </span>
+    );
+  } else {
+    positionSpecificStats = (
+      <span>
+        <span className="mlb_team">AB: {player.AB}</span>
+        <span className="mlb_team">R: {player.R}</span>
+        <span className="mlb_team">HR: {player.HR}</span>
+        <span className="mlb_team">RBI: {player.RBI}</span>
+        <span className="mlb_team">SB: {player.SB}</span>
+        <span className="mlb_team">{player.AVG}/{player.OBP}/{player.SLG}</span>
+      </span>
+    );
+  }
+
   return (
     <li
       onClick={onPlayerRowClick}
@@ -59,8 +84,8 @@ const PlayerRow = ({
       <span className="player-id">id: {player.id}</span>
       <span className="rank">{player.rank}</span>
       <span className="positions">{player.positions}</span>
-      <span className="player-name">{player.player_name}</span>
-      <span className="mlb_team">({player.mlb_team})</span>
+      <span className="player-name">{player.player_name} {player.mlb_team}</span>
+      { positionSpecificStats }
       <span className="draft-button">{ displayDraftButton }</span>
       { displayExtendedPlayer }
     </li>

@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
 router.get('/players/id/:userId', (req, res) => {
   const userId = req.params.userId;
   new db.ConnectionPool(poolConfig).connect().then((connection) => {
-    return connection.query`SELECT * FROM players WHERE id = ${userId}`;
+    return connection.query`SELECT * FROM players_rankings_full WHERE id = ${userId}`;
   }).then((response) => {
     const data = response.recordset;
     return res.json({ data });
@@ -26,7 +26,7 @@ router.get('/players/name/:playerSearchString', (req, res) => {
   const playerSearchString = `%${req.params.playerSearchString}%`;
   new db.ConnectionPool(poolConfig).connect().then((connection) => {
     return connection.query`
-      SELECT * FROM players_rankings
+      SELECT * FROM players_rankings_full
       WHERE player_name LIKE ${playerSearchString}
       ORDER BY rank
     `;
@@ -43,7 +43,7 @@ router.get('/players/position/:position', (req, res) => {
   const position = `%${req.params.position}%`;
   new db.ConnectionPool(poolConfig).connect().then((connection) => {
     return connection.query`
-      SELECT * FROM players_rankings
+      SELECT * FROM players_rankings_full
       WHERE positions LIKE ${position}
       ORDER BY rank
     `;
@@ -58,7 +58,7 @@ router.get('/players/position/:position', (req, res) => {
 /* GET list of all players */
 router.get('/players', (req, res) => {
   new db.ConnectionPool(poolConfig).connect().then((connection) => {
-    return connection.query`SELECT * FROM players_rankings ORDER BY rank`;
+    return connection.query`SELECT * FROM players_rankings_full ORDER BY rank`;
   }).then((response) => {
     const data = response.recordset;
     return res.json({ data });
