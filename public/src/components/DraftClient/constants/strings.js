@@ -33,6 +33,12 @@ const strings = {
     resume: 'resume',
     undo: 'undo pick',
   },
+  profile_box: {
+    next_pick: 'Your next pick is',
+    no_more_pick: 'You have no more picks',
+    next_pick_difference: 'Your next pick is in',
+    turn_to_draft: 'Make your pick!',
+  },
 };
 
 export default strings;

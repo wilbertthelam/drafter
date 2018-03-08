@@ -188,6 +188,12 @@ const playerSearcher = (state = {}, action) => {
       };
       return Object.assign({}, state, newState);
     }
+    case actions.playerDrafter.UPDATE_NEXT_USER_PICK: {
+      const newState = {
+        nextUserPick: action.nextUserPick,
+      };
+      return Object.assign({}, state, newState);
+    }
     default:
       return state;
   }

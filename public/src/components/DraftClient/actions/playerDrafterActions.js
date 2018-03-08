@@ -75,3 +75,10 @@ export const updateCurrentSelectedUserRosterId = (currentSelectedUserRosterId) =
     currentSelectedUserRosterId,
   };
 };
+
+export const updateNextUserPick = (nextUserPick) => {
+  return {
+    type: actions.playerDrafter.UPDATE_NEXT_USER_PICK,
+    nextUserPick,
+  };
+};

@@ -184,6 +184,7 @@ module.exports = (io) => {
         userRoster: draftInstance.getUserRoster(userId),
         currentPickUserId: draftInstance.getCurrentUserPick(),
         isPaused: draftInstance.getIsPaused(),
+        nextUserPick: draftInstance.getNextPickNumber(userId),
       };
       debug(`userId: ${userId} has successfully downloaded setup data`);
       debug(`userId that is sent to client: ${userId}`);
@@ -202,6 +203,7 @@ module.exports = (io) => {
         // tell user that draft is currently paused
       } else {
         io.emit('player_drafted', roundEventData);
+        socket.emit('next_user_pick', draftInstance.getNextPickNumber(userId));
 
         // If draft is over, alert the users
         if (roundEventData.draftComplete) {
@@ -227,12 +229,18 @@ module.exports = (io) => {
         playersByPosition = players;
       } else if (cleanedPosition === 'of') {
         players.forEach((player) => {
-          if (
-            player.positions &&
+          if (player.positions &&
             (player.positions.toLowerCase().includes('rf') ||
             player.positions.toLowerCase().includes('cf') ||
             player.positions.toLowerCase().includes('lf'))
           ) {
+            playersByPosition.push(player);
+          }
+        });
+      } else if (cleanedPosition === 'c') {
+        players.forEach((player) => {
+          const positions = player.positions.split(',');
+          if (positions.includes('C')) {
             playersByPosition.push(player);
           }
         });
@@ -263,6 +271,10 @@ module.exports = (io) => {
         });
       }
       socket.emit('search_player_by_name_return', playersByName);
+    });
+
+    socket.on('next_user_pick_request', (requestedUserId) => {
+      socket.emit('next_user_pick', draftInstance.getNextPickNumber(requestedUserId));
     });
 
     // Admin socket responsibilities

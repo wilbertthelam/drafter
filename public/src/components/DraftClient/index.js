@@ -32,6 +32,7 @@ const INITIAL_STATE = {
   isPaused: false,
   currentSelectedUserRosterId: 0,
   filterDrafted: true,
+  nextUserPick: -1,
 };
 
 const fullInitialState = {
@@ -101,6 +102,9 @@ class DraftClient extends React.Component {
 
       console.log('Update if draft is paused or not on first load');
       store.dispatch(playerDrafterActions.updateDraftPauseState(preloadData.isPaused));
+
+      console.log('Update user next pick on first load');
+      store.dispatch(playerDrafterActions.updateNextUserPick(preloadData.nextUserPick));
     });
 
     // When someone drafts a player:
@@ -171,7 +175,13 @@ class DraftClient extends React.Component {
 
         console.log('Update if draft is paused or not on pick rollback');
         store.dispatch(playerDrafterActions.updateDraftPauseState(response.isPaused));
+
+        this.socket.emit('next_user_pick_request', store.getState().playerSearcher.userId);
       }
+    });
+
+    this.socket.on('next_user_pick', (pickNumber) => {
+      store.dispatch(playerDrafterActions.updateNextUserPick(pickNumber));
     });
 
     this.socket.on('draft_complete', () => {
