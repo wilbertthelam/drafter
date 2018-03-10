@@ -35,24 +35,7 @@ const PlayerRow = ({
     );
   }
 
-  let displayExtendedPlayer;
-  if (selectedPlayerId === player.id) {
-    displayExtendedPlayer = (
-      <div className="extended-player">
-        <div className="advanced-stats">
-          <div><span className="stat-label">ADP</span> <span>{player.adp}</span></div>
-          <div><span className="stat-label">AB</span> <span>{player.AB || '---'}</span></div>
-          <div><span className="stat-label">IP</span> <span>{player.IP || '---'}</span></div>
-        </div>
-        <div className="notes">
-          <span className="note-icon">
-            <FontAwesomeIcon icon={noteIcon} />
-          </span>
-          {player.notes}
-        </div>
-      </div>
-    );
-  }
+
 
   let className = 'player-row';
   if (selectedPlayerId === player.id) {
@@ -65,25 +48,79 @@ const PlayerRow = ({
   let positionSpecificStats;
   if (player.positions.includes('SP') || player.positions.includes('RP')) {
     positionSpecificStats = (
-      <span>
-        <span className="stat"><span className="stat-label">W:</span> <span>{player.W}</span></span>
-        <span className="stat"><span className="stat-label">K:</span> <span>{player.K}</span></span>
-        <span className="stat"><span className="stat-label">SV:</span> <span>{player.SV}</span></span>
-        <span className="stat"><span className="stat-label">ERA:</span> <span>{player.ERA}</span></span>
-        <span className="stat"><span className="stat-label">WHIP:</span> <span>{player.WHIP}</span></span>
-      </span>
+      <div>
+        <div className="stat"><div className="stat-label">W</div> <div>{player.W}</div></div>
+        <div className="stat"><div className="stat-label">K</div> <div>{player.K}</div></div>
+        <div className="stat"><div className="stat-label">SV</div> <div>{player.SV}</div></div>
+        <div className="stat"><div className="stat-label">ERA</div> <div>{player.ERA}</div></div>
+        <div className="stat"><div className="stat-label">WHIP</div> <div>{player.WHIP}</div></div>
+      </div>
     );
   } else {
+    const standardSlashLine = (<div className="stat"><div>{player.AVG}/{player.OBP}/{player.SLG}</div></div>);
     positionSpecificStats = (
-      <span>
-        <span className="stat"><span className="stat-label">R:</span> <span>{player.R}</span></span>
-        <span className="stat"><span className="stat-label">HR:</span> <span>{player.HR}</span></span>
-        <span className="stat"><span className="stat-label">SB:</span> <span>{player.SB}</span></span>
-        <span className="stat"><span className="stat-label">RBI:</span> <span>{player.RBI}</span></span>
-        <span className="stat"><span>{player.AVG}/{player.OBP}/{player.SLG}</span></span>
-      </span>
+      <div>
+        <div className="stat"><div className="stat-label">R</div> <div>{player.R}</div></div>
+        <div className="stat"><div className="stat-label">HR</div> <div>{player.HR}</div></div>
+        <div className="stat"><div className="stat-label">SB</div> <div>{player.SB}</div></div>
+        <div className="stat"><div className="stat-label">RBI</div> <div>{player.RBI}</div></div>
+        { selectedPlayerId !== player.id ? standardSlashLine : '' }
+      </div>
     );
   }
+
+  let playerRow = (
+    <div className="standard-row">
+      <div className="rank">{player.rank}</div>
+      <div className="positions">{player.positions}</div>
+      <div className="player-name">{player.player_name} <span className="mlb-team">{player.mlb_team}</span></div>
+      { positionSpecificStats }
+    </div>
+  );
+
+  // let displayExtendedPlayer;
+  if (selectedPlayerId === player.id) {
+    playerRow = (
+      <div className="extended-player">
+        <div className="player-header">
+          <div className="rank">{player.rank} </div>
+          <div className="positions">{player.positions} </div>
+          <div className="player-name">{player.player_name} <span className="mlb-team">{player.mlb_team}</span></div>
+          <div className="draft-button">{ displayDraftButton }</div>
+        </div>
+        <div className="player-body">
+          <div className="body-left">
+            <div className="standard-stats">
+              { positionSpecificStats }
+            </div>
+            <div className="slash-stats">
+              <div>
+                <div><div className="stat-label">AVG</div> <div>{player.AVG || '--'}</div></div>
+                <div><div className="stat-label">OBP</div> <div>{player.OBP || '--'}</div></div>
+                <div><div className="stat-label">SLG</div> <div>{player.SLG || '--'}</div></div>
+              </div>
+            </div>
+            <div className="advanced-stats">
+              <div>
+                <div><div className="stat-label">ADP</div> <div>{player.adp}</div></div>
+                <div><div className="stat-label">AB</div> <div>{player.AB || '--'}</div></div>
+                <div><div className="stat-label">IP</div> <div>{player.IP || '--'}</div></div>
+              </div>
+            </div>
+          </div>
+          <div className="notes">
+            <div>
+              <span className="note-icon">
+                <FontAwesomeIcon icon={noteIcon} />
+              </span>
+              {player.notes}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // <span className="player-id">id: {player.id}</span>
   return (
     <li
@@ -91,14 +128,7 @@ const PlayerRow = ({
       onKeyPress={onKeyPress}
       className={className}
     >
-      <div className="standard-row">
-        <span className="rank">{player.rank}</span>
-        <span className="positions">{player.positions}</span>
-        <span className="player-name">{player.player_name} <span className="mlb-team">{player.mlb_team}</span></span>
-        { positionSpecificStats }
-        <span className="draft-button">{ displayDraftButton }</span>
-      </div>
-      { displayExtendedPlayer }
+      { playerRow }
     </li>
   );
 };

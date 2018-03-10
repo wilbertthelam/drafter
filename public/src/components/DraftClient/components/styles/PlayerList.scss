@@ -43,7 +43,7 @@ $highlight: #31E981;
     }
 
     .player-name {
-      width: 13rem;
+      width: 16rem;
 
       .mlb-team {
         color: #757575;
@@ -53,7 +53,8 @@ $highlight: #31E981;
 
     .stat {
       margin: 0;
-      padding: 0;
+      padding: 0 .8rem;
+
     }
   }
 
