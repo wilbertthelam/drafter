@@ -15,7 +15,7 @@ class PlayerList extends React.Component {
   onSearchDebounced(event) {
     if (event && event.target) {
       this.props.changePlayerSearchString(event.target.value);
-      this.props.onPlayerSearch(event.target.value);
+      this.props.onPlayerSearch(event.target.value, this.props.players);
     }
   }
 
@@ -42,6 +42,10 @@ class PlayerList extends React.Component {
           return player.isDrafted === false;
         });
       }
+
+      filteredPlayers = filteredPlayers.filter((player) => {
+        return !player.hideOnBoard || player.hideOnBoard === false;
+      });
       playerListDisplay = filteredPlayers.map((player) => {
         return (
           <PlayerRow
@@ -61,7 +65,7 @@ class PlayerList extends React.Component {
     }
 
     return (
-      <div className="player-searcher">
+      <div className="component-boxes player-searcher">
         <div className="search-filter">
           <input
             className="player-search-box"
@@ -74,6 +78,7 @@ class PlayerList extends React.Component {
             filterBy={this.props.onPlayerSearchByPosition}
             toggleDraftedFilter={this.props.toggleDraftedFilter}
             filterDrafted={this.props.filterDrafted}
+            players={this.props.players}
           />
         </div>
         <ul className="scroll-list">

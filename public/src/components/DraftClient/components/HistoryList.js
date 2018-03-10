@@ -24,7 +24,7 @@ class HistoryList extends React.Component {
     }
 
     return (
-      <div className="history-list">
+      <div className="component-boxes history-list">
         <ul>
           {historyList}
         </ul>

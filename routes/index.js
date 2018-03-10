@@ -33,6 +33,10 @@ router.post('/login', (req, res) => {
   }
 });
 
+router.get('/draftresults/:draftId', (req, res) => {
+  res.render('draftresults');
+});
+
 router.get('/draftroom', auth.isAuthenticated, (req, res) => {
   res.render('index');
 });

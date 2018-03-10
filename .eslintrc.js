@@ -5,6 +5,7 @@ module.exports = {
       "arrow-body-style": ["error", "always"],
       "newline-per-chained-call": "off",
       "consistent-return": "off",
+      "class-methods-use-this": "off",
       "import/no-extraneous-dependencies": "off",
       "react/jsx-filename-extension": "off",
       "react/prefer-stateless-function": "off",

@@ -34,7 +34,7 @@ const mockDraftOrder = [{
   round: 4,
   pickNumber: 7,
 }, {
-  userId: 3,
+  userId: 2,
   round: 4,
   pickNumber: 8,
 }, {
@@ -42,7 +42,47 @@ const mockDraftOrder = [{
   round: 5,
   pickNumber: 9,
 }, {
-  userId: 3,
+  userId: 2,
+  round: 5,
+  pickNumber: 10,
+}, {
+  userId: 2,
+  round: 1,
+  pickNumber: 1,
+}, {
+  userId: 2,
+  round: 1,
+  pickNumber: 2,
+}, {
+  userId: 2,
+  round: 2,
+  pickNumber: 3,
+}, {
+  userId: 2,
+  round: 2,
+  pickNumber: 4,
+}, {
+  userId: 2,
+  round: 3,
+  pickNumber: 5,
+}, {
+  userId: 2,
+  round: 3,
+  pickNumber: 6,
+}, {
+  userId: 2,
+  round: 4,
+  pickNumber: 7,
+}, {
+  userId: 2,
+  round: 4,
+  pickNumber: 8,
+}, {
+  userId: 2,
+  round: 5,
+  pickNumber: 9,
+}, {
+  userId: 2,
   round: 5,
   pickNumber: 10,
 }];
@@ -116,6 +156,7 @@ setTimeout(() => {
       mockDraftOrder,
       [],
       mockUserRoster,
+      0,
     );
   }).catch((error) => {
     debug(`Failed to intialize server data: ${error}`);

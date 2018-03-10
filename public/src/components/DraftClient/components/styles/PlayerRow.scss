@@ -1,7 +1,33 @@
 .player-row {
-  .extended-player span {
+  span {
+    vertical-align: middle;
+    padding: .1rem;
+  }
+  .extended-player {
+    display: flex;
+
+    .advanced-stats {
+       width: 30rem;
+    }
+
+    .notes {
+      font-weight: 300;
+      font-size: 1.3rem;
+    }
+  }
+
+  .extended-player > div {
     overflow: visible;
     white-space: normal;
+  }
+
+  .note-icon {
+
+  }
+
+  .stat-label {
+    color: #757575;
+    padding-right: 0;
     font-weight: 300;
   }
 }

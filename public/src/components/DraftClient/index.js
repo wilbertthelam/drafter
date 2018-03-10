@@ -8,35 +8,10 @@ import DraftClientLayout from './containers/DraftClientLayout';
 import * as playerDrafterActions from './actions/playerDrafterActions';
 import * as playerSearcherActions from './actions/playerSearcherActions';
 import * as userActions from './actions/userActions';
-
-
-const INITIAL_STATE = {
-  players: [],
-  extendedPlayer: {
-    name: 'Edgar Martinez',
-    position: 'DH',
-    rank: 11,
-    isHallOfFame: true,
-    playerId: 0,
-  },
-  selectedPlayerId: 0,
-  playerSearchString: '',
-  isLoading: false,
-  error: '',
-  userId: -1,
-  currentPickUserId: -1,
-  draftHistory: [],
-  futurePicks: [],
-  userRoster: [],
-  users: [],
-  isPaused: false,
-  currentSelectedUserRosterId: 0,
-  filterDrafted: true,
-  nextUserPick: -1,
-};
+import initialState from './initialState';
 
 const fullInitialState = {
-  playerSearcher: INITIAL_STATE,
+  playerSearcher: initialState,
 };
 
 const store = createStore(reducer, fullInitialState, applyMiddleware(thunk));
@@ -113,7 +88,6 @@ class DraftClient extends React.Component {
     // c. block off client side drafting by non current users
     this.socket.on('player_drafted', (playerDraftedData) => {
       console.log(JSON.stringify(playerDraftedData));
-      const userId = store.getState() && store.getState().playerSearcher.userId;
 
       store.dispatch(playerDrafterActions
         .setCurrentPickUserId(playerDraftedData.currentPickUserId));
@@ -126,21 +100,18 @@ class DraftClient extends React.Component {
         store.dispatch(playerDrafterActions.updateUserRoster(playerDraftedData.userRoster));
       }
 
-      // Only updates for non-active users (who are not currently picking)
-      if (userId !== playerDraftedData.previousPickUserId) {
-        const historyPlayerData = [{
-          previousPickUserId: playerDraftedData.previousPickUserId,
-          previousPickPlayerId: playerDraftedData.previousPickPlayerId,
-          previousPickRound: playerDraftedData.previousPickRound,
-          previousPickPickNumber: playerDraftedData.previousPickPickNumber,
-        }];
+      const historyPlayerData = [{
+        previousPickUserId: playerDraftedData.previousPickUserId,
+        previousPickPlayerId: playerDraftedData.previousPickPlayerId,
+        previousPickRound: playerDraftedData.previousPickRound,
+        previousPickPickNumber: playerDraftedData.previousPickPickNumber,
+      }];
 
-        store.dispatch(playerDrafterActions
-          .updateHistory(historyPlayerData));
+      store.dispatch(playerDrafterActions
+        .updateHistory(historyPlayerData));
 
-        store.dispatch(playerDrafterActions
-          .markPlayerAsDrafted(playerDraftedData.previousPickPlayerId));
-      }
+      store.dispatch(playerDrafterActions
+        .markPlayerAsDrafted(playerDraftedData.previousPickPlayerId));
     });
 
     this.socket.on('get_user_roster_return', (userRosterData) => {

@@ -14,7 +14,6 @@ const DraftButton = ({
       onClick={() => { return draftSelectedPlayer(selectedPlayerId, userId); }}
     >
       {strings.draft_button.draft}
-      {selectedPlayerId}
     </button>
   );
 };

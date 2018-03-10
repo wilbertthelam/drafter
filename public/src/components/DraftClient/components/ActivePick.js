@@ -15,15 +15,16 @@ const ActivePick = ({
   } else {
     onlineIcon = (<span className="offline-icon"><FontAwesomeIcon icon={offlineIcon} /></span>);
   }
+
   return (
     <div className="active-pick">
-      <div className="round-number">
-        {strings.ticker.round} {pick.round} | #{pick.pickNumber}
-      </div>
       <div className="active-pick-body">
+        <div className="pick-number">
+          <span>{pick.pickNumber}</span>
+        </div>
         <div className="active-pick-info">
-          <div className="pick-team">{pick.team}</div>
-          <div className="pick-name">{onlineIcon} {pick.name}</div>
+          <div className="pick-team">{onlineIcon} {pick.team}</div>
+          <div className="pick-name">{pick.name}</div>
         </div>
       </div>
     </div>

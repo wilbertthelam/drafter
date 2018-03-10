@@ -18,7 +18,7 @@ const strings = {
     hide_drafted: 'hide drafted',
   },
   draft_button: {
-    draft: 'draft',
+    draft: 'draft player',
   },
   draft_history: {
     default_history_message: 'draft history',
@@ -34,8 +34,8 @@ const strings = {
     undo: 'undo pick',
   },
   profile_box: {
-    next_pick: 'Your next pick is',
-    no_more_pick: 'You have no more picks',
+    next_pick: 'Next pick: ',
+    no_more_pick: 'You don\'t have anymore picks!',
     next_pick_difference: 'Your next pick is in',
     turn_to_draft: 'Make your pick!',
   },

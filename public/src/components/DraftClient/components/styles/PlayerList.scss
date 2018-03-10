@@ -13,12 +13,13 @@ $highlight: #31E981;
 
   .scroll-list {
     overflow-y: scroll;
-    height: 40rem;
+    height: 60rem;
   }
 
   li {
+    border-radius: .2rem;
     padding: .3rem;
-    font-size: .9rem;
+    font-size: 1.4rem;
     cursor: pointer;
 
     span {
@@ -30,32 +31,63 @@ $highlight: #31E981;
     }
 
     .player-id {
-      width: 2.5rem;
+      width: 4rem;
     }
 
     .rank {
-      width: 1.5rem;
+      width: 3.5rem;
     }
 
     .positions {
-      width: 3rem;
+      width: 7rem;
     }
 
     .player-name {
-      width: 10rem;
+      width: 13rem;
+
+      .mlb-team {
+        color: #757575;
+        font-size: 1rem;
+      }
     }
 
-    .mlb-team {
-      width: 3.5rem;
+    .stat {
+      margin: 0;
+      padding: 0;
     }
   }
 
   .selected-player-highlight {
-    // background: $blue;
+    border: #D2D2D2 .1rem solid;
+    border-radius: .2rem;
+    background: #F7F7F7;
+    padding: 1.1rem;
+
+    .stat-label {
+      font-weight: 400;
+    }
+
+    span {
+      font-weight: 500;
+    }
+
+    .standard-row {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    .player-name {
+      width: 13rem;
+    }
+
   }
 
   .search-filter {
     display: flex;
+    background: #EEEEEE;
+    padding: .3rem;
+    border-bottom: #D7D7D7 .1rem solid;
+    vertical-align: middle;
 
     .player-search-box {
       flex: 1;
@@ -63,6 +95,14 @@ $highlight: #31E981;
 
     .position-filter {
       flex: 1;
+      margin: 0rem 1rem;
+    }
+
+    input {
+      border-radius: .3rem;
+      border: #D7D7D7 .1rem solid;
+      padding: 0rem .5rem;
+      font-family: 'Roboto', sans-serif;
     }
   }
 }

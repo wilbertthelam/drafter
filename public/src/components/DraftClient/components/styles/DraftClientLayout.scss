@@ -4,11 +4,20 @@ $app-middle: #F6C28B;
 $app-accent: #5296A5;
 $app-accent-light: #82DDF0;
 
+$app-background: #F4F4F4;
+
+html {
+  font-size: 12px;
+}
+
 body {
   margin: 0;
   padding: 0;
-  background: white;
+  background: $app-background;
   font-family: 'Roboto', sans-serif;
+  color: $app-dark;
+  min-width: 1200px;
+  font-size: 1.5rem;
 }
 
 .draft-container {
@@ -31,9 +40,11 @@ body {
     }
   }
 
-  ul {
-    background: $app-light;
-    border: $app-middle .1rem solid;
+  .component-boxes {
+    background: white;
+    border: #DDDDDD .1rem solid;
+    border-radius: .2rem;
+    margin: .3rem;
   }
 
   li {
@@ -45,6 +56,21 @@ body {
   }
 
   .player-searcher, .history-list, .roster-list {
-    padding: .3rem;
+    padding: 0;
+  }
+
+  button {
+    background: $app-middle;
+    border: none;
+    padding: .4rem 1rem;
+    border-radius: .5rem;
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+
+  }
+
+  button:hover {
+    box-shadow: inset 0 0 0 .2rem white;
   }
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import ActivePick from './ActivePick';
+import strings from './../constants/strings';
 import './styles/TickerStream.scss';
 
 class TickerStream extends React.Component {
@@ -21,8 +22,22 @@ class TickerStream extends React.Component {
       );
     });
 
+    let round;
+    if (this.props.futurePicks && this.props.futurePicks.length > 0) {
+      round = (
+        <div className="active-pick">
+          <div className="active-pick-body">
+            <div className="round-number">
+              {strings.ticker.round} {this.props.futurePicks[0].round}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="ticker-stream">
+        {round}
         {pickList}
       </div>
     );

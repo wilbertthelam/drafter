@@ -4,57 +4,92 @@ $app-middle: #F6C28B;
 $app-accent: #5296A5;
 $app-accent-light: #82DDF0;
 
+$circle-radius: 1.2rem;
+
 .ticker-stream {
   display: flex;
   flex-direction: row;
+  overflow-x: auto;
+
+  .active-pick:first-child {
+    margin-right: ($circle-radius * 2 + 2rem) * -1;
+    background: #DF5A5A;
+    color: white;
+    font-weight: 500;
+    border-radius: 5rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 1.6rem;
+  }
 
   .active-pick {
+    padding: 0;
     display: flex;
-    flex-direction: column;
     margin-right: .1rem;
-
-    .round-number {
-      display: flex;
-      background: $app-accent;
-      color: $app-light;
-      font-size: .8rem;
-      height: 1rem;
-      padding: .1rem;
-    }
+    background: white;
+    border-radius: 5rem 5rem 5rem 5rem;
+    border: #D7D7D7 1px solid;
+    margin: .8rem;
 
     .active-pick-body {
       display: flex;
+      flex-direction: row;
+      align-items: center;
 
-      > div {
+      .pick-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: $app-accent;
+        color: $app-light;
+        font-size: 1.5rem;
+        border-radius: 100%;
+        width: $circle-radius * 2;
+        height: $circle-radius * 2;
         padding: .5rem;
       }
 
+      .round-number {
+        padding: .5rem 4rem .5rem 1.4rem;
+
+        & .active-pick {
+          padding: -1rem;
+        }
+      }
+
       .picture {
-        flex: 1;
         border: black 1px dotted;
       }
 
       .active-pick-info {
-        flex: 2;
+        display: flex;
+        flex-direction: column;
+        padding-left: .5rem;
       }
 
       .pick-name {
-        font-size: .9rem;
+        font-size: 1.2rem;
+        padding-right: 1.3rem;
+        white-space: nowrap;
       }
 
       .pick-team {
-        font-size: .7rem;
+        font-size: 1rem;
       }
     }
 
     .available-icon {
       color: green;
-      font-size: .5rem;
+      font-size: .7rem;
     }
 
     .offline-icon {
       color: red;
-      font-size: .5rem;
+      font-size: .7rem;
     }
   }
+}
+
+.ticker-stream::-webkit-scrollbar {
+    display: none;
 }

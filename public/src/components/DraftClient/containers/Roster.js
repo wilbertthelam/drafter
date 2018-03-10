@@ -18,6 +18,7 @@ const mapStateToProps = (state) => {
     userRoster: state.playerSearcher.userRoster,
     users: state.playerSearcher.users,
     currentSelectedUserRosterId: state.playerSearcher.currentSelectedUserRosterId,
+    rosterPositions: state.playerSearcher.rosterPositions,
   };
 };
 

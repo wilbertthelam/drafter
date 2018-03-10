@@ -6,32 +6,72 @@ import PlayerList from './../components/PlayerList';
 /**
  * Search for a player given the user inputted string
  */
-const searchPlayer = (playerSearchString, socket) => {
+const searchPlayer = (playerSearchString, players) => {
   return (dispatch) => {
     dispatch(playerSearcherActions.searchPlayersLoading(true));
-    socket.emit('search_player_by_name', playerSearchString);
-    socket.on('search_player_by_name_return', (playersByName) => {
-      dispatch(playerSearcherActions.searchPlayersLoading(false));
-      dispatch(playerSearcherActions.searchPlayersSuccess(playersByName));
+    const cleanedPlayerSearchString = playerSearchString.toLowerCase();
+    players.forEach((player) => {
+      if ((!playerSearchString || playerSearchString === '') ||
+        (player.player_name &&
+        player.player_name.toLowerCase().includes(cleanedPlayerSearchString))
+      ) {
+        player.hideOnBoard = false;
+      } else {
+        player.hideOnBoard = true;
+      }
     });
+    dispatch(playerSearcherActions.searchPlayersLoading(false));
+    dispatch(playerSearcherActions.searchPlayersSuccess(players));
   };
 };
 
 /**
  * Search for a player given the user selected position
  */
-const searchPlayerByPosition = (position, socket) => {
+const searchPlayerByPosition = (position, players) => {
   return (dispatch) => {
     dispatch(playerSearcherActions.searchPlayersLoading(true));
 
     // Clear player search string inside text box
     dispatch(playerSearcherActions.changePlayerSearchString(''));
 
-    socket.emit('search_player_by_position', position);
-    socket.on('search_player_by_position_return', (playersByPosition) => {
-      dispatch(playerSearcherActions.searchPlayersLoading(false));
-      dispatch(playerSearcherActions.searchPlayersSuccess(playersByPosition));
-    });
+    const cleanedPosition = position.toLowerCase();
+    if (!cleanedPosition || cleanedPosition.toLowerCase() === 'all') {
+      players.forEach((player) => {
+        player.hideOnBoard = false;
+      });
+    } else if (cleanedPosition === 'of') {
+      players.forEach((player) => {
+        if (player.positions &&
+          (player.positions.toLowerCase().includes('rf') ||
+          player.positions.toLowerCase().includes('cf') ||
+          player.positions.toLowerCase().includes('lf'))
+        ) {
+          player.hideOnBoard = false;
+        } else {
+          player.hideOnBoard = true;
+        }
+      });
+    } else if (cleanedPosition === 'c') {
+      players.forEach((player) => {
+        const positions = player.positions.split(',');
+        if (positions.includes('C')) {
+          player.hideOnBoard = false;
+        } else {
+          player.hideOnBoard = true;
+        }
+      });
+    } else {
+      players.forEach((player) => {
+        if (player.positions && player.positions.toLowerCase().includes(cleanedPosition)) {
+          player.hideOnBoard = false;
+        } else {
+          player.hideOnBoard = true;
+        }
+      });
+    }
+    dispatch(playerSearcherActions.searchPlayersLoading(false));
+    dispatch(playerSearcherActions.searchPlayersSuccess(players));
   };
 };
 
@@ -40,14 +80,6 @@ const draftSelectedPlayer = (selectedPlayerId, userId, socket) => {
     dispatch(playerDrafterActions.draftPlayerWaiting(true));
     socket.emit('draft_player', selectedPlayerId);
     dispatch(playerDrafterActions.draftPlayerStatus(true));
-
-    // Update history for the current user
-    const historyPlayerData = [{
-      previousPickUserId: userId,
-      previousPickPlayerId: selectedPlayerId,
-    }];
-    dispatch(playerDrafterActions.updateHistory(historyPlayerData));
-    dispatch(playerDrafterActions.markPlayerAsDrafted(selectedPlayerId));
   };
 };
 
@@ -91,11 +123,11 @@ const mapDispatchToProps = (dispatch, socket) => {
     draftSelectedPlayer: (selectedPlayerId, userId) => {
       return dispatch(draftSelectedPlayer(selectedPlayerId, userId, socket.socket));
     },
-    onPlayerSearch: (playerSearchString) => {
-      return dispatch(searchPlayer(playerSearchString, socket.socket));
+    onPlayerSearch: (playerSearchString, players) => {
+      return dispatch(searchPlayer(playerSearchString, players));
     },
-    onPlayerSearchByPosition: (position) => {
-      return dispatch(searchPlayerByPosition(position, socket.socket));
+    onPlayerSearchByPosition: (position, players) => {
+      return dispatch(searchPlayerByPosition(position, players));
     },
     toggleDraftedFilter: () => {
       return dispatch(playerSearcherActions.toggleDraftedFilter());
