@@ -18,17 +18,9 @@ $highlight: #31E981;
 
   li {
     border-radius: .2rem;
-    padding: .3rem;
-    font-size: 1.4rem;
+    padding: .6rem;
+    font-size: 1.3rem;
     cursor: pointer;
-
-    span {
-      overflow: hidden;
-      white-space: nowrap;
-      padding-right: .5rem;
-      display: inline-block;
-      text-overflow: ellipsis;
-    }
 
     .player-id {
       width: 4rem;
@@ -40,6 +32,7 @@ $highlight: #31E981;
 
     .positions {
       width: 7rem;
+      display: inline-block;
     }
 
     .player-name {

@@ -73,7 +73,7 @@ const PlayerRow = ({
     <div className="standard-row">
       <div className="rank">{player.rank}</div>
       <div className="positions">{player.positions}</div>
-      <div className="player-name">{player.player_name} <span className="mlb-team">{player.mlb_team}</span></div>
+      <div className="player-name"><span><span>{player.player_name}</span> <span className="mlb-team">{player.mlb_team}</span></span></div>
       { positionSpecificStats }
     </div>
   );
