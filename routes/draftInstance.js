@@ -11,6 +11,7 @@ class DraftInstance {
     draftHistory,
     allUsersRoster,
     draftId,
+    keepers,
   ) {
     this.players = players || [];
     this.users = users || [];
@@ -24,6 +25,57 @@ class DraftInstance {
     this.futurePicks = this.createFuturePicks(0);
     this.draftPaused = false;
     this.draftId = draftId;
+
+    this.addKeepers(keepers);
+  }
+
+  addKeepers(keepers) {
+    keepers.forEach((keeper) => {
+      // Update players by marking them as Drafted
+      this.markPlayerAsDrafted(keeper.playerId);
+
+      // Add player to the users roster
+      this.addPlayerToUserRoster(keeper.playerId, keeper.userId, true);
+
+      // Update draftOrder by marking as a keeper usage
+      // at that round and pick
+      keeper.sacrificedPicks.forEach((sacrificedPick) => {
+        const pick = _.find(this.draftOrder, (draftPick) => {
+          return draftPick.round === sacrificedPick.round &&
+            draftPick.pickNumber === sacrificedPick.pickNumber;
+        });
+
+        if (!pick) {
+          debug('Could not find requested sacrificed pick for keepers');
+        } else {
+          pick.isKeeper = true;
+          pick.playerId = keeper.playerId;
+        }
+      });
+    });
+  }
+
+  currentPickIsKeeper() {
+    if (this.currentPickIndex >= this.draftOrder.length) {
+      return false;
+    }
+
+    // If not a keeper, return false
+    const draftPick = this.draftOrder[this.currentPickIndex];
+    if (!draftPick.isKeeper || draftPick.isKeeper === false) {
+      return false;
+    }
+
+    return true;
+  }
+
+  draftKeeper() {
+    const draftPick = this.draftOrder[this.currentPickIndex];
+    this.updatePrevious(draftPick.playerId, draftPick.userId);
+    this.addPlayerToDraftHistory(draftPick.playerId, draftPick.userId);
+    this.advanceToNextPick();
+    this.updateFuturePicks(this.currentPickIndex);
+    return this.createPickEvent();
   }
 
   pauseDraft() {
@@ -81,12 +133,13 @@ class DraftInstance {
     return this.createPickEvent();
   }
 
-  addPlayerToUserRoster(playerId, userId) {
+  addPlayerToUserRoster(playerId, userId, isKeeper) {
     const rosterPlayer = {
       playerId,
       userId,
       round: this.getCurrentRound(),
       pickNumber: this.getCurrentPickNumber(),
+      isKeeper,
     };
 
     if (this.getUserRoster(userId)) {
@@ -159,6 +212,10 @@ class DraftInstance {
         debug(`Old draft order: ${JSON.stringify(this.createFuturePicks(this.currentPickIndex))}`);
         this.currentPickIndex -= 1;
 
+        // Find if the current pick is a keeper pick, if so do not remove
+        // from players list or from the user's roster
+        const previousKeeper = this.draftOrder[this.currentPickIndex];
+
         // Rollback draft history by cutting off the first player (most recent)
         const previousPlayer = this.draftHistory.pop();
 
@@ -168,18 +225,23 @@ class DraftInstance {
         debug(`New draft order: ${JSON.stringify(this.futurePicks)}`);
 
         // Rollback user rosters by removing player from user roster
-        const newUserRoster = this.allUsersRoster[this.previousPickUserId];
-        _.remove(newUserRoster, (player) => {
-          return player.playerId === previousPlayer.previousPickPlayerId;
-        });
-        this.allUsersRoster[this.previousPickUserId] = newUserRoster;
+        if (!previousKeeper.isKeeper || previousKeeper.isKeeper === false) {
+          const newUserRoster = this.allUsersRoster[this.previousPickUserId];
+          _.remove(newUserRoster, (player) => {
+            return player.playerId === previousPlayer.previousPickPlayerId &&
+              (!player.isKeeper || player.isKeeper === false);
+          });
+          this.allUsersRoster[this.previousPickUserId] = newUserRoster;
+        }
 
         // Rollback current pick userId
         debug(`New current pick index: ${this.currentPickIndex}`);
         this.currentPickUserId = this.previousPickUserId;
 
         // Rollback picked player
-        this.markPlayerAsNotDrafted(previousPlayer.previousPickPlayerId);
+        if (!previousKeeper.isKeeper || previousKeeper.isKeeper === false) {
+          this.markPlayerAsNotDrafted(previousPlayer.previousPickPlayerId);
+        }
 
         // Clean out previousPickPlayerId and previousPickUserId
         this.previousPickPlayerId = undefined;

@@ -47,43 +47,43 @@ const mockDraftOrder = [{
   pickNumber: 10,
 }, {
   userId: 2,
-  round: 1,
+  round: 6,
   pickNumber: 1,
 }, {
   userId: 2,
-  round: 1,
+  round: 7,
   pickNumber: 2,
 }, {
   userId: 2,
-  round: 2,
+  round: 8,
   pickNumber: 3,
 }, {
   userId: 2,
-  round: 2,
+  round: 9,
   pickNumber: 4,
 }, {
   userId: 2,
-  round: 3,
+  round: 10,
   pickNumber: 5,
 }, {
   userId: 2,
-  round: 3,
+  round: 11,
   pickNumber: 6,
 }, {
   userId: 2,
-  round: 4,
+  round: 12,
   pickNumber: 7,
 }, {
   userId: 2,
-  round: 4,
+  round: 13,
   pickNumber: 8,
 }, {
   userId: 2,
-  round: 5,
+  round: 14,
   pickNumber: 9,
 }, {
   userId: 2,
-  round: 5,
+  round: 15,
   pickNumber: 10,
 }];
 
@@ -95,6 +95,22 @@ const mockUserRoster = {
   4: [],
   5: [],
 };
+
+const mockKeepers = [{
+  userId: 2,
+  playerId: 3, // Nolan Arenado
+  sacrificedPicks: [{
+    round: 2,
+    pickNumber: 3,
+  }],
+}, {
+  userId: 3,
+  playerId: 1, // Mike Trout
+  sacrificedPicks: [{
+    round: 2,
+    pickNumber: 4,
+  }],
+}];
 
 
 let draftInstance;
@@ -157,6 +173,7 @@ setTimeout(() => {
       [],
       mockUserRoster,
       0,
+      mockKeepers,
     );
   }).catch((error) => {
     debug(`Failed to intialize server data: ${error}`);
@@ -250,6 +267,17 @@ module.exports = (io) => {
         if (roundEventData.draftComplete) {
           io.emit('draft_complete', roundEventData);
         }
+
+        // Check to see if new pick is keeper
+        while (draftInstance.currentPickIsKeeper()) {
+          const keeperPickData = draftInstance.draftKeeper();
+          io.emit('player_drafted', keeperPickData);
+
+          // If draft is over after going through keeper picks, alert the users
+          if (keeperPickData.draftComplete) {
+            io.emit('draft_complete', roundEventData);
+          }
+        }
       }
     });
 
@@ -262,6 +290,7 @@ module.exports = (io) => {
       socket.emit('get_user_roster_return', userRosterData);
     });
 
+    // TODO: rewrite this monstrosity
     socket.on('search_player_by_position', (position) => {
       const cleanedPosition = position.toLowerCase();
       const players = draftInstance.getPlayers();

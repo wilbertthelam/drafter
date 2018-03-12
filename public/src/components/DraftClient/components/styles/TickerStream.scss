@@ -11,6 +11,10 @@ $circle-radius: 1.2rem;
   flex-direction: row;
   overflow-x: auto;
 
+  .keeper-highlight {
+    background: #DF5A5A !important;     
+  }
+
   .active-pick:first-child {
     margin-right: ($circle-radius * 2 + 2rem) * -1;
     background: #DF5A5A;

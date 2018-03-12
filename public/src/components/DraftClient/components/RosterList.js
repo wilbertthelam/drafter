@@ -5,9 +5,20 @@ import strings from './../constants/strings';
 import './styles/RosterList.scss';
 
 class RosterList extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.rosterPlayers = undefined;
+    this.state = { value: props.currentSelectedUserRosterId };
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ value: nextProps.currentSelectedUserRosterId });
+  }
+
+  handleChange(event) {
+    this.setState({ value: event.target.value });
+    this.props.selectUserRoster(event.target.value);
   }
 
   playerFit(position, playerPosition) {
@@ -96,8 +107,6 @@ class RosterList extends React.Component {
         <option
           key={user.id}
           value={user.id}
-          selected={user.id === this.props.currentSelectedUserRosterId}
-          onClick={() => { return this.props.selectUserRoster(user.id); }}
         >
           {user.name}
         </option>
@@ -106,7 +115,7 @@ class RosterList extends React.Component {
 
     return (
       <div className="component-boxes roster-list">
-        <select>
+        <select value={this.state.value} onChange={this.handleChange}>
           {userList}
         </select>
         <ul>

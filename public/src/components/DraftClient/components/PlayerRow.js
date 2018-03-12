@@ -16,7 +16,6 @@ const PlayerRow = ({
   userId,
   currentPickUserId,
   isPaused,
-  extendedPlayer,
 }) => {
   const isUserTurn = userId === currentPickUserId;
   let displayDraftButton;
@@ -34,8 +33,6 @@ const PlayerRow = ({
       />
     );
   }
-
-
 
   let className = 'player-row';
   if (selectedPlayerId === player.id) {
@@ -57,7 +54,11 @@ const PlayerRow = ({
       </div>
     );
   } else {
-    const standardSlashLine = (<div className="stat"><div>{player.AVG}/{player.OBP}/{player.SLG}</div></div>);
+    const standardSlashLine = (
+      <div className="stat">
+        <div>{player.AVG}/{player.OBP}/{player.SLG}</div>
+      </div>
+    );
     positionSpecificStats = (
       <div>
         <div className="stat"><div className="stat-label">R</div> <div>{player.R}</div></div>
@@ -73,19 +74,26 @@ const PlayerRow = ({
     <div className="standard-row">
       <div className="rank">{player.rank}</div>
       <div className="positions">{player.positions}</div>
-      <div className="player-name"><span><span>{player.player_name}</span> <span className="mlb-team">{player.mlb_team}</span></span></div>
+      <div className="player-name">
+        <span>
+          <span>{player.player_name}</span>
+          <span className="mlb-team">{player.mlb_team}</span>
+        </span>
+      </div>
       { positionSpecificStats }
     </div>
   );
 
-  // let displayExtendedPlayer;
   if (selectedPlayerId === player.id) {
     playerRow = (
       <div className="extended-player">
         <div className="player-header">
           <div className="rank">{player.rank} </div>
           <div className="positions">{player.positions} </div>
-          <div className="player-name">{player.player_name} <span className="mlb-team">{player.mlb_team}</span></div>
+          <div className="player-name">
+            {player.player_name}
+            <span className="mlb-team">{player.mlb_team}</span>
+          </div>
           <div className="draft-button">{ displayDraftButton }</div>
         </div>
         <div className="player-body">
@@ -151,6 +159,5 @@ PlayerRow.propTypes = {
   draftSelectedPlayer: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired,
   currentPickUserId: PropTypes.number.isRequired,
-  extendedPlayer: PropTypes.object.isRequired,
   isPaused: PropTypes.bool.isRequired,
 };

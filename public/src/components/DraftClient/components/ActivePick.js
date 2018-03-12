@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import * as availableIcon from '@fortawesome/fontawesome-free-solid/faCircle';
 import * as offlineIcon from '@fortawesome/fontawesome-free-regular/faCircle';
-import strings from './../constants/strings';
 
 const ActivePick = ({
   pick,
@@ -16,10 +15,15 @@ const ActivePick = ({
     onlineIcon = (<span className="offline-icon"><FontAwesomeIcon icon={offlineIcon} /></span>);
   }
 
+  let keeperClass = '';
+  if (pick.isKeeper) {
+    keeperClass = 'keeper-highlight';
+  }
+
   return (
     <div className="active-pick">
       <div className="active-pick-body">
-        <div className="pick-number">
+        <div className={`pick-number ${keeperClass}`}>
           <span>{pick.pickNumber}</span>
         </div>
         <div className="active-pick-info">

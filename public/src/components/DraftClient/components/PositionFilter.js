@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import strings from './../constants/strings';
 import './styles/PositionFilter.scss';
 
-const PositionFilter = ({ filterBy, toggleDraftedFilter, filterDrafted, players }) => {
+const PositionFilter = ({
+  filterBy,
+  toggleDraftedFilter,
+  filterDrafted,
+  players,
+}) => {
   return (
     <ul className="position-filter">
       <li onClick={() => filterBy(strings.position_filter.all, players)}>{strings.position_filter.all}</li>
