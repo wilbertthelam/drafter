@@ -105,6 +105,7 @@ class DraftClient extends React.Component {
         previousPickPlayerId: playerDraftedData.previousPickPlayerId,
         previousPickRound: playerDraftedData.previousPickRound,
         previousPickPickNumber: playerDraftedData.previousPickPickNumber,
+        isKeeper: playerDraftedData.isKeeper,
       }];
 
       store.dispatch(playerDrafterActions

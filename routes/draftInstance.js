@@ -72,7 +72,7 @@ class DraftInstance {
   draftKeeper() {
     const draftPick = this.draftOrder[this.currentPickIndex];
     this.updatePrevious(draftPick.playerId, draftPick.userId);
-    this.addPlayerToDraftHistory(draftPick.playerId, draftPick.userId);
+    this.addPlayerToDraftHistory(draftPick.playerId, draftPick.userId, true);
     this.advanceToNextPick();
     this.updateFuturePicks(this.currentPickIndex);
     return this.createPickEvent();
@@ -96,6 +96,7 @@ class DraftInstance {
       previousPickPickNumber: this.getPreviousPickNumber(),
       draftComplete: this.currentPickIndex >= this.draftOrder.length,
       userRoster: this.allUsersRoster[this.previousPickUserId],
+      isKeeper: this.draftHistory[this.draftHistory.length - 1].isKeeper,
     };
   }
 
@@ -187,12 +188,13 @@ class DraftInstance {
     });
   }
 
-  addPlayerToDraftHistory(playerId, userId) {
+  addPlayerToDraftHistory(playerId, userId, isKeeper) {
     const draftHistoryModel = {
       previousPickPlayerId: playerId,
       previousPickUserId: userId,
       previousPickRound: this.getCurrentRound(),
       previousPickPickNumber: this.getCurrentPickNumber(),
+      isKeeper,
     };
 
     this.draftHistory.push(draftHistoryModel);
@@ -264,7 +266,7 @@ class DraftInstance {
 
   getNextPickNumber(userId) {
     for (let i = this.currentPickIndex; i < this.draftOrder.length; i += 1) {
-      if (this.draftOrder[i].userId === userId) {
+      if (this.draftOrder[i].userId === userId && !this.draftOrder[i].isKeeper) {
         return this.draftOrder[i].pickNumber;
       }
     }

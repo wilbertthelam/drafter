@@ -20,10 +20,11 @@ const ActivePick = ({
     keeperClass = 'keeper-highlight';
   }
 
-  return (
-    <div className="active-pick">
+  let pickPill;
+  if (!pick.isKeeper) {
+    pickPill = (
       <div className="active-pick-body">
-        <div className={`pick-number ${keeperClass}`}>
+        <div className="pick-number">
           <span>{pick.pickNumber}</span>
         </div>
         <div className="active-pick-info">
@@ -31,6 +32,24 @@ const ActivePick = ({
           <div className="pick-name">{pick.name}</div>
         </div>
       </div>
+    );
+  } else {
+    pickPill = (
+      <div className="active-pick-body">
+        <div className={`pick-number ${keeperClass}`}>
+          <span>K</span>
+        </div>
+        <div className="active-pick-info faded">
+          <div className="pick-team">{onlineIcon} {pick.team}</div>
+          <div className="pick-name">{pick.name}</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="active-pick">
+      { pickPill }
     </div>
   );
 };

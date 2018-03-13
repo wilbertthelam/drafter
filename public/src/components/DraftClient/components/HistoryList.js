@@ -7,9 +7,12 @@ import './styles/HistoryList.scss';
 class HistoryList extends React.Component {
   render() {
     let historyList = this.props.draftHistory.map((playerData, index) => {
+      const keeperPill = playerData && playerData.isKeeper && playerData.isKeeper === true ?
+        (<span className="keeper-pill">K</span>) : '';
       return (
         <li key={index}>
           <span><b>{playerData.previousPickPickNumber}</b></span>
+          { keeperPill }
           <span>{playerData.positions}</span>
           <span>{playerData.playerName}</span>
           <span>({playerData.name})</span>

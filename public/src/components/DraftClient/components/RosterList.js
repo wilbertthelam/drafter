@@ -87,9 +87,11 @@ class RosterList extends React.Component {
   render() {
     this.populatePositions();
     let rosterList = this.rosterPlayers.map((player, index) => {
+      const keeperPill = player && player.isKeeper && player.isKeeper === true ? (<span className="keeper-pill">K</span>) : '';
       return (
         <li key={index}>
           <span><b>{this.props.rosterPositions[index]} </b></span>
+          { keeperPill }
           <span>{player ? player.playerName : ''}</span>
           <span>{player ? player.positions : ''}</span>
         </li>
@@ -132,6 +134,7 @@ RosterList.propTypes = {
   userRoster: PropTypes.arrayOf(PropTypes.shape({
     playerId: PropTypes.number,
     userId: PropTypes.number,
+    isKeeper: PropTypes.bool,
   }).isRequired),
   selectUserRoster: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(PropTypes.shape({

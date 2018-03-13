@@ -97,6 +97,7 @@ const playerSearcher = (state = {}, action) => {
           previousPickPlayerId: historyPlayer.previousPickPlayerId,
           previousPickRound: historyPlayer.previousPickRound,
           previousPickPickNumber: historyPlayer.previousPickPickNumber,
+          isKeeper: historyPlayer.isKeeper,
         };
 
         // Add supplementary data for view
@@ -141,6 +142,9 @@ const playerSearcher = (state = {}, action) => {
         const userRosterPlayerData = {
           userId: userRosterPlayer.userId,
           playerId: userRosterPlayer.playerId,
+          round: userRosterPlayer.round,
+          picKNumber: userRosterPlayer.pickNumber,
+          isKeeper: userRosterPlayer.isKeeper,
         };
 
         // Add supplementary data for view
