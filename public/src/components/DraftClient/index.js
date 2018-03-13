@@ -42,9 +42,12 @@ class DraftClient extends React.Component {
       }
     });
 
-    this.socket.on('connection_verified', (userId) => {
+    this.socket.on('connection_verified', ({ userId, isAdmin }) => {
       console.log(`Current userId is: ${userId}`);
-      store.dispatch(playerDrafterActions.setUserId(userId));
+      store.dispatch(userActions.setUserId(userId));
+      if (isAdmin) {
+        store.dispatch(userActions.markUserAsAdmin(true));
+      }
     });
 
     // Players & users data is required to come in first due to dependencies on it
@@ -149,6 +152,8 @@ class DraftClient extends React.Component {
         store.dispatch(playerDrafterActions.updateDraftPauseState(response.isPaused));
 
         this.socket.emit('next_user_pick_request', store.getState().playerSearcher.userId);
+      } else {
+        alert(response.error);
       }
     });
 
@@ -168,7 +173,9 @@ class DraftClient extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <DraftClientLayout socket={this.socket} />
+        <DraftClientLayout
+          socket={this.socket}
+        />
       </Provider>
     );
   }

@@ -13,3 +13,17 @@ export const setUserStatus = (status) => {
     status,
   };
 };
+
+export const setUserId = (userId) => {
+  return {
+    type: actions.users.SET_USER_ID,
+    userId,
+  };
+};
+
+export const markUserAsAdmin = (isAdmin) => {
+  return {
+    type: actions.users.MARK_USER_AS_ADMIN,
+    isAdmin,
+  };
+};

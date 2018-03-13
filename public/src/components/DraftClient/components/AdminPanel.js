@@ -11,6 +11,10 @@ class AdminPanel extends React.Component {
   render() {
     const pauseText = this.props.isPaused ? strings.admin_panel.resume : strings.admin_panel.pause;
     const icon = this.props.isPaused ? playIcon : pauseIcon;
+    if (!this.props.isAdmin) {
+      return <div />;
+    }
+
     return (
       <div className="admin-panel">
         <button onClick={() => { return this.props.toggleDraft(!this.props.isPaused); }}>
@@ -32,4 +36,5 @@ AdminPanel.propTypes = {
   toggleDraft: PropTypes.func.isRequired,
   isPaused: PropTypes.bool.isRequired,
   rollbackPick: PropTypes.func.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
 };

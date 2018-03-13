@@ -8,6 +8,7 @@ class ProfileBox extends React.Component {
     const pickDifference = this.props.nextUserPick - this.props.currentPick;
     let nextUserPickString;
     let nextUserPickDifference;
+    let currentUserPickClass = '';
 
     if (pickDifference > 0) {
       if (this.props.nextUserPick > -1) {
@@ -23,13 +24,15 @@ class ProfileBox extends React.Component {
       nextUserPickDifference = (
         <div>
           {strings.profile_box.turn_to_draft}
-        </div>);
+        </div>
+      );
+      currentUserPickClass = 'current-user-pick';
     } else {
       nextUserPickString = (<div>{strings.profile_box.no_more_pick}</div>);
     }
 
     return (
-      <div className="component-boxes profile-box">
+      <div className={`component-boxes profile-box ${currentUserPickClass}`}>
         <div className="profile-picture">
           <img
             src="https://pbs.twimg.com/profile_images/597190106647175168/e1_DjZH9_400x400.jpg"

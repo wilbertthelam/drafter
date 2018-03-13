@@ -75,7 +75,7 @@ const playerSearcher = (state = {}, action) => {
       };
       return Object.assign({}, state, newState);
     }
-    case actions.playerDrafter.SET_USER_ID: {
+    case actions.users.SET_USER_ID: {
       const newState = {
         userId: action.userId,
       };
@@ -195,6 +195,12 @@ const playerSearcher = (state = {}, action) => {
     case actions.playerDrafter.UPDATE_NEXT_USER_PICK: {
       const newState = {
         nextUserPick: action.nextUserPick,
+      };
+      return Object.assign({}, state, newState);
+    }
+    case actions.users.MARK_USER_AS_ADMIN: {
+      const newState = {
+        isAdmin: action.isAdmin,
       };
       return Object.assign({}, state, newState);
     }

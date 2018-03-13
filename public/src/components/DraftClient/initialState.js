@@ -40,6 +40,7 @@ const initialState = {
   filterDrafted: true,
   nextUserPick: -1,
   rosterPositions: hardCodedPositions,
+  isAdmin: false,
 };
 
 export default initialState;

@@ -24,6 +24,7 @@ router.post('/login', (req, res) => {
         return res.render('login', { valid: false });
       }
       req.session.userId = data[0].id;
+      req.session.isAdmin = data[0].isAdmin;
       return res.redirect('/');
     }).catch((error) => {
       return res.render('login', { valid: false, error });

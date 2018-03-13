@@ -183,17 +183,19 @@ setTimeout(() => {
 // Connections
 module.exports = (io) => {
   io.on('connection', (socket) => {
-    // const socketUserId = socket.id;
     if (!(socket.request && socket.request.session && socket.request.session.userId)) {
       debug('Error with establishing user connection');
       socket.emit('force_refresh');
       return;
     }
     const userId = socket.request.session.userId;
-    // const userId = userList.indexOf(socketUserId);
+    const isAdmin = socket.request.session.isAdmin;
+
+    debug(`isAdmin: ${isAdmin}`);
+
     draftInstance.updateUserStatus(userId, true);
 
-    socket.emit('connection_verified', userId);
+    socket.emit('connection_verified', { userId, isAdmin });
     io.emit('user_status', { userId, online: true });
 
     // On first load data hydration
@@ -349,24 +351,31 @@ module.exports = (io) => {
 
     // Admin socket responsibilities
     socket.on('admin_roll_back_pick', () => {
-      draftInstance.rollbackPick().then(() => {
-        const response = {
-          draftHistory: draftInstance.getDraftHistory(),
-          futurePicks: draftInstance.getFuturePicks(),
-          userRoster: draftInstance.getUserRoster(draftInstance.currentPickUserId),
-          currentPickUserId: draftInstance.getCurrentUserPick(),
-          isPaused: draftInstance.getIsPaused(),
-          // TODO: just mark player as undrafted
-          players: draftInstance.getPlayers(),
-          previousPickUserId: draftInstance.getPreviousPickUserId(),
-        };
-        io.emit('admin_roll_back_pick_return', response);
-      }).catch((error) => {
+      if (draftInstance.getIsPaused()) {
+        draftInstance.rollbackPick().then(() => {
+          const response = {
+            draftHistory: draftInstance.getDraftHistory(),
+            futurePicks: draftInstance.getFuturePicks(),
+            userRoster: draftInstance.getUserRoster(draftInstance.currentPickUserId),
+            currentPickUserId: draftInstance.getCurrentUserPick(),
+            isPaused: draftInstance.getIsPaused(),
+            // TODO: just mark player as undrafted
+            players: draftInstance.getPlayers(),
+            previousPickUserId: draftInstance.getPreviousPickUserId(),
+          };
+          io.emit('admin_roll_back_pick_return', response);
+        }).catch((error) => {
+          const wrappedError = {
+            error,
+          };
+          socket.emit('admin_roll_back_pick_return', wrappedError);
+        });
+      } else {
         const wrappedError = {
-          error,
+          error: 'Draft needs to be paused to rollback!',
         };
-        io.emit('admin_roll_back_pick_return', wrappedError);
-      });
+        socket.emit('admin_roll_back_pick_return', wrappedError);
+      }
     });
 
     socket.on('toggle_pause_draft', (isPaused) => {

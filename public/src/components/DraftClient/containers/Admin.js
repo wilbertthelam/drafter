@@ -5,6 +5,7 @@ import * as playerDrafterActions from './../actions/playerDrafterActions';
 const mapStateToProps = (state) => {
   return {
     isPaused: state.playerSearcher.isPaused,
+    isAdmin: state.playerSearcher.isAdmin,
   };
 };
 

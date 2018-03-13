@@ -21,13 +21,6 @@ export const markPlayerAsDrafted = (playerId) => {
   };
 };
 
-export const setUserId = (userId) => {
-  return {
-    type: actions.playerDrafter.SET_USER_ID,
-    userId,
-  };
-};
-
 export const setCurrentPickUserId = (currentPickUserId) => {
   return {
     type: actions.playerDrafter.SET_CURRENT_PICK_USER_ID,

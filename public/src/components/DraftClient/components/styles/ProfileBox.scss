@@ -20,7 +20,13 @@
   }
 
   .strings {
-    dislay: flex;
+    display: flex;
     flex-direction: column;
   }
+}
+
+.current-user-pick {
+  background: #F6C28B !important;
+  color: white !important;
+  font-weight: 500;
 }
