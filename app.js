@@ -35,9 +35,11 @@ const draftroom = require('./routes/draftroom')(io);
 
 // Dev hot loading
 // TODO: Wrap in env development clause.
-app.use(webpackDevMiddleware(compiler, {
-  publicPath: config.output.publicPath,
-}));
+if (process.env.NODE_ENV === 'development') {
+  app.use(webpackDevMiddleware(compiler, {
+    publicPath: config.output.publicPath,
+  }));
+}
 
 app.set('io', io);
 
