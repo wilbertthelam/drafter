@@ -116,7 +116,7 @@ const mockKeepers = [{
 let draftInstance;
 
 const loadPlayers = new Promise((resolve, reject) => {
-  request('http://localhost:3000/api/players', { json: true }, (error, response) => {
+  request('https://drafter.azurewebsites.net/api/players', { json: true }, (error, response) => {
     if (error) {
       return reject(error);
     }
@@ -139,7 +139,7 @@ const loadPlayers = new Promise((resolve, reject) => {
 });
 
 const loadUsers = new Promise((resolve, reject) => {
-  request('http://localhost:3000/api/users', { json: true }, (error, response) => {
+  request('http://drafter.azurewebsites.net/api/users', { json: true }, (error, response) => {
     if (error) {
       return reject(new Error(error));
     }
