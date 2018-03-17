@@ -1,5 +1,4 @@
 const express = require('express');
-const request = require('request');
 const debug = require('debug')('drafter');
 const DraftInstance = require('./draftInstance');
 const apiHelper = require('./apiHelper');
