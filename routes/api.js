@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('mssql');
 const poolConfig = require('./utils/db');
+const apiHelper = require('./apiHelper');
 
 const router = express.Router();
 
@@ -57,10 +58,7 @@ router.get('/players/position/:position', (req, res) => {
 
 /* GET list of all players */
 router.get('/players', (req, res) => {
-  new db.ConnectionPool(poolConfig).connect().then((connection) => {
-    return connection.query`SELECT * FROM players_rankings_full ORDER BY rank`;
-  }).then((response) => {
-    const data = response.recordset;
+  apiHelper.getPlayers().then((data) => {
     return res.json({ data });
   }).catch((error) => {
     return res.json({ error });
@@ -74,10 +72,7 @@ router.post('/players', (req, res) => {
 
 /* GET list of all players */
 router.get('/users', (req, res) => {
-  new db.ConnectionPool(poolConfig).connect().then((connection) => {
-    return connection.query`SELECT * FROM users`;
-  }).then((response) => {
-    const data = response.recordset;
+  apiHelper.getUsers().then((data) => {
     return res.json({ data });
   }).catch((error) => {
     return res.json({ error });

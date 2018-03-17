@@ -2,6 +2,7 @@ const express = require('express');
 const request = require('request');
 const debug = require('debug')('drafter');
 const DraftInstance = require('./draftInstance');
+const apiHelper = require('./apiHelper');
 
 const router = express.Router();
 
@@ -116,17 +117,8 @@ const mockKeepers = [{
 let draftInstance;
 
 const loadPlayers = new Promise((resolve, reject) => {
-  return request('https://drafter.azurewebsites.net/api/players', { json: true }, (error, response) => {
-    if (error) {
-      return reject(error);
-    }
-
-    const rawPlayers = response.body && response.body.data;
-    if (!rawPlayers && response.body && response.body.error) {
-      return reject(response.body.error.originalError.message);
-    } else if (!rawPlayers) {
-      return reject(new Error('Unknown error retrieving players'));
-    }
+  return apiHelper.getPlayers().then((data) => {
+    const rawPlayers = data;
     const players = [];
     rawPlayers.forEach((player) => {
       const newPlayer = {
@@ -135,21 +127,14 @@ const loadPlayers = new Promise((resolve, reject) => {
       players.push(Object.assign({}, player, newPlayer));
     });
     return resolve(players);
+  }).catch((error) => {
+    return reject(new Error(`Error retrieving players: ${error}`));
   });
 });
 
 const loadUsers = new Promise((resolve, reject) => {
-  return request('https://drafter.azurewebsites.net/api/users', { json: true }, (error, response) => {
-    if (error) {
-      return reject(new Error(error));
-    }
-
-    const users = response.body && response.body.data;
-    if (!users && response.body && response.body.error) {
-      return reject(response.body.error.originalError.message);
-    } else if (!users) {
-      return reject(new Error('Unknown error retrieving users'));
-    }
+  return apiHelper.getUsers().then((data) => {
+    const users = data;
     // Add default status field
     const expandedUsers = [];
     users.forEach((user) => {
@@ -158,6 +143,8 @@ const loadUsers = new Promise((resolve, reject) => {
       expandedUsers.push(expandedUser);
     });
     return resolve(expandedUsers);
+  }).catch((error) => {
+    return reject(new Error(`Error retrieving users: ${error}`));
   });
 });
 
@@ -192,8 +179,6 @@ module.exports = (io) => {
     const isAdmin = socket.request.session.isAdmin;
 
     debug(`isAdmin: ${isAdmin}`);
-
-    draftInstance.updateUserStatus(userId, true);
 
     socket.emit('connection_verified', { userId, isAdmin });
     io.emit('user_status', { userId, online: true });
@@ -236,6 +221,8 @@ module.exports = (io) => {
     } else {
       draftOrchestrationAttempt();
     }
+
+    draftInstance.updateUserStatus(userId, true);
 
     socket.on('draft_orchestration_preload_success', () => {
       const preloadData = {
