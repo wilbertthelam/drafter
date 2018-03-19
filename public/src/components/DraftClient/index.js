@@ -153,7 +153,7 @@ class DraftClient extends React.Component {
 
         this.socket.emit('next_user_pick_request', store.getState().playerSearcher.userId);
       } else {
-        alert(response.error);
+        alert(JSON.stringify(response.error));
       }
     });
 
