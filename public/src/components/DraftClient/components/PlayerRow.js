@@ -88,7 +88,7 @@ const PlayerRow = ({
     playerRow = (
       <div className="extended-player">
         <div className="player-header">
-          <div className="rank">{player.rank} </div>
+          <div className="rank">{player.rank} id: {player.id}</div>
           <div className="positions">{player.positions} </div>
           <div className="player-name">
             {player.player_name}
@@ -128,8 +128,6 @@ const PlayerRow = ({
       </div>
     );
   }
-
-  // <span className="player-id">id: {player.id}</span>
   return (
     <li
       onClick={onPlayerRowClick}
