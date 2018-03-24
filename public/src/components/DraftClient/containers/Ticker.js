@@ -6,6 +6,7 @@ const mapStateToProps = (state) => {
     currentPickUserId: state.playerSearcher.currentPickUserId,
     futurePicks: state.playerSearcher.futurePicks,
     users: state.playerSearcher.users,
+    userId: state.playerSearcher.userId,
   };
 };
 

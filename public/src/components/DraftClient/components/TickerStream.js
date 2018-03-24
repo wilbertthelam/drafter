@@ -18,6 +18,7 @@ class TickerStream extends React.Component {
           key={index}
           pick={pick}
           online={online}
+          userId={this.props.userId}
         />
       );
     });
@@ -56,6 +57,7 @@ TickerStream.propTypes = {
   }).isRequired),
   // TODO: FLESH OUT
   users: PropTypes.array,
+  userId: PropTypes.number.isRequired,
 };
 
 TickerStream.defaultProps = {

@@ -27,6 +27,11 @@ $circle-radius: 1.2rem;
     border: #D7D7D7.3rem solid;
   }
 
+  .user-turn {
+    background: #F6C28B !important;
+    color: white;
+  }
+
   .active-pick {
     padding: 0;
     display: flex;
@@ -75,6 +80,7 @@ $circle-radius: 1.2rem;
       .faded {
         color: #7D7D7D;
       }
+
       .pick-name {
         font-size: 1.2rem;
         padding-right: 1.3rem;
@@ -83,6 +89,8 @@ $circle-radius: 1.2rem;
 
       .pick-team {
         font-size: 1rem;
+        white-space: nowrap;
+        padding-right: 1.3rem;
       }
     }
 

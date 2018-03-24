@@ -2,7 +2,7 @@ const express = require('express');
 const debug = require('debug')('drafter');
 const DraftInstance = require('./draftInstance');
 const apiHelper = require('./apiHelper');
-const mockData = require('./utils/mockData');
+const mockData = require('./utils/fieldOfGGreams');
 
 const router = express.Router();
 
@@ -40,19 +40,89 @@ const loadUsers = new Promise((resolve, reject) => {
   });
 });
 
+const loadDraftHistory = new Promise((resolve, reject) => {
+  return apiHelper.getDraftHistory(mockData.draftId).then((draftHistory) => {
+    const draftHistoryWrapper = [];
+    draftHistory.forEach((draftSlot) => {
+      const wrappedDraftSlot = {
+        previousPickPlayerId: draftSlot.playerId,
+        previousPickUserId: draftSlot.userId,
+        previousPickRound: draftSlot.pickRound,
+        previousPickPickNumber: draftSlot.pickNumber,
+        isKeeper: draftSlot.isKeeper,
+      };
+      draftHistoryWrapper.push(wrappedDraftSlot);
+    });
+    return resolve(draftHistoryWrapper);
+  }).catch((error) => {
+    return reject(new Error(`Error retrieving draft history: ${error}`));
+  });
+});
 
-Promise.all([loadPlayers, loadUsers]).then((values) => {
+const loadCurrentPickIndex = new Promise((resolve, reject) => {
+  return apiHelper.getCurrentPickIndex(mockData.draftId).then((currentPickIndex) => {
+    if (!currentPickIndex || currentPickIndex.length === 0) {
+      return resolve(0);
+    }
+    return resolve(currentPickIndex[0].max_number);
+  }).catch((error) => {
+    return reject(new Error(`Error retrieving draft history: ${error}`));
+  });
+});
+
+const loadDraftUserRoster = new Promise((resolve, reject) => {
+  return apiHelper.getDraftUserRoster(mockData.draftId).then((data) => {
+    const draftUserRoster = {};
+    apiHelper.getUsers(mockData.draftId).then((users) => {
+      users.forEach((user) => {
+        draftUserRoster[user.id] = [];
+      });
+
+      data.forEach((row) => {
+        // If dictionary hasn't been initialized for the player, create it
+        if (!draftUserRoster[row.userId]) {
+          draftUserRoster[row.userId] = [];
+        }
+
+        const userRosterWrapper = {
+          playerId: row.playerId,
+          userId: row.userId,
+          round: row.pickRound,
+          pickNumber: row.pickNumber,
+          isKeeper: 0, // TODO: make this actual read to see if it is keeper
+        };
+
+        draftUserRoster[row.userId].push(userRosterWrapper);
+      });
+      return resolve(draftUserRoster);
+    });
+  }).catch((error) => {
+    return reject(new Error(`Error retrieving draft history: ${error}`));
+  });
+});
+
+Promise.all([
+  loadPlayers,
+  loadUsers,
+  loadDraftHistory,
+  loadCurrentPickIndex,
+  loadDraftUserRoster,
+]).then((values) => {
   const players = values[0];
   const users = values[1];
+  const draftHistory = values[2];
+  const currentPickIndex = values[3];
+  const draftUserRoster = values[4];
 
   draftInstance = new DraftInstance(
     players,
     users,
-    mockData.mockDraftOrder,
-    [],
-    mockData.mockUserRoster,
+    mockData.draftOrder,
+    draftHistory,
+    draftUserRoster,
     mockData.draftId,
-    mockData.mockKeepers,
+    mockData.draftKeepers,
+    currentPickIndex,
   );
 }).catch((error) => {
   debug(`Failed to intialize server data: ${error}`);

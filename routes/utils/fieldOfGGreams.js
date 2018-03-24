@@ -2,7 +2,6 @@ const draftId = 1;
 const draftRounds = 20;
 const draftUserOrder = [8, 6, 12, 15, 7, 4, 5, 11, 13, 9];
 const draftUserRoster = {};
-const draftKeepers = [];
 const isSnakeDraft = true;
 
 const draftOrder = [];
@@ -43,128 +42,126 @@ draftUserOrder.forEach((user) => {
   draftUserRoster[user] = [];
 });
 
-draftKeepers = [{
+const draftKeepers = [{
   userId: 6,
   playerId: 82,
   sacrificedPicks: [{
-    round: 18,
-    pickNumber: 
+    round: 16,
+    pickNumber: 159,
   }],
 }, {
   userId: 6,
   playerId: 177,
   sacrificedPicks: [{
     round: 19,
-    pickNumber: 
+    pickNumber: 182,
   }],
 }, {
   userId: 13,
   playerId: 6,
   sacrificedPicks: [{
     round: 11,
-    pickNumber: 
+    pickNumber: 109,
   }],
 }, {
   userId: 13,
   playerId: 52,
   sacrificedPicks: [{
     round: 17,
-    pickNumber: 
+    pickNumber: 169,
   }],
 }, {
   userId: 12,
   playerId: 25,
   sacrificedPicks: [{
     round: 19,
-    pickNumber: 
+    pickNumber: 183,
   }],
 }, {
   userId: 12,
   playerId: 191,
   sacrificedPicks: [{
     round: 18,
-    pickNumber: 
+    pickNumber: 178,
   }],
 }, {
   userId: 8,
   playerId: 45,
   sacrificedPicks: [{
     round: 19,
-    pickNumber: 
+    pickNumber: 181,
   }],
 }, {
   userId: 8,
   playerId: 44,
   sacrificedPicks: [{
-    round: 18,
-    pickNumber: 
+    round: 14,
+    pickNumber: 140,
   }],
 }, {
   userId: 9,
   playerId: 22,
   sacrificedPicks: [{
     round: 19,
-    pickNumber: 
+    pickNumber: 190,
   }],
 }, {
   userId: 9,
   playerId: 84,
   sacrificedPicks: [{
     round: 17,
-    pickNumber: 
+    pickNumber: 170,
   }],
 }, {
   userId: 5,
   playerId: 43,
   sacrificedPicks: [{
     round: 19,
-    pickNumber: 
+    pickNumber: 187,
   }],
 }, {
   userId: 5,
   playerId: 11,
   sacrificedPicks: [{
     round: 11,
-    pickNumber: 
+    pickNumber: 107,
   }],
 }, {
   userId: 11,
   playerId: 90,
   sacrificedPicks: [{
     round: 12,
-    pickNumber: 
+    pickNumber: 113,
   }],
 }, {
   userId: 7,
   playerId: 30,
   sacrificedPicks: [{
     round: 15,
-    pickNumber: 
+    pickNumber: 145,
   }],
 }, {
   userId: 7,
   playerId: 87,
   sacrificedPicks: [{
     round: 13,
-    pickNumber: 
+    pickNumber: 125,
+  }],
+}, {
+  userId: 4,
+  playerId: 186,
+  sacrificedPicks: [{
+    round: 19,
+    pickNumber: 186,
+  }],
+}, {
+  userId: 4,
+  playerId: 97,
+  sacrificedPicks: [{
+    round: 18,
+    pickNumber: 175,
   }],
 }];
-
-// const mockKeepers = [{
-//   userId: 2,
-//   playerId: 3, // Nolan Arenado
-//   sacrificedPicks: [{
-//     round: 2,
-//     pickNumber: 3,
-//   }],
-// }, {
-//   userId: 3,
-//   playerId: 1, // Mike Trout
-//   sacrificedPicks: [{
-//     round: 2,
-//     pickNumber: 4,
-//   }],
-// }];
 
 module.exports = {
   draftUserRoster,

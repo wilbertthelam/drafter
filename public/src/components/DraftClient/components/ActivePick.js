@@ -7,6 +7,7 @@ import * as offlineIcon from '@fortawesome/fontawesome-free-regular/faCircle';
 const ActivePick = ({
   pick,
   online,
+  userId,
 }) => {
   let onlineIcon;
   if (online) {
@@ -20,6 +21,11 @@ const ActivePick = ({
     keeperClass = 'keeper-highlight';
   }
 
+  let userTurnClass = '';
+  if (pick.userId === userId) {
+    userTurnClass = 'user-turn';
+  }
+
   let pickPill;
   if (!pick.isKeeper) {
     pickPill = (
@@ -28,8 +34,8 @@ const ActivePick = ({
           <span>{pick.pickNumber}</span>
         </div>
         <div className="active-pick-info">
-          <div className="pick-team">{onlineIcon} {pick.team}</div>
-          <div className="pick-name">{pick.name}</div>
+          <div className="pick-team">{onlineIcon} {pick.name}</div>
+          <div className="pick-name">{pick.team}</div>
         </div>
       </div>
     );
@@ -48,7 +54,7 @@ const ActivePick = ({
   }
 
   return (
-    <div className="active-pick">
+    <div className={`active-pick ${userTurnClass}`}>
       { pickPill }
     </div>
   );
@@ -65,4 +71,5 @@ ActivePick.propTypes = {
     team: PropTypes.string,
   }).isRequired,
   online: PropTypes.bool.isRequired,
+  userId: PropTypes.number.isRequired,
 };

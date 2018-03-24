@@ -12,13 +12,14 @@ class DraftInstance {
     allUsersRoster,
     draftId,
     keepers,
+    currentPickIndex,
   ) {
     this.players = players || [];
     this.users = users || [];
     this.draftOrder = draftOrder || [];
     this.draftHistory = draftHistory || [];
     this.allUsersRoster = allUsersRoster;
-    this.currentPickIndex = 0;
+    this.currentPickIndex = currentPickIndex || 0;
     this.previousPickPlayerId = undefined;
     this.previousPickUserId = undefined;
     this.currentPickUserId = undefined;
@@ -27,6 +28,13 @@ class DraftInstance {
     this.draftId = draftId;
 
     this.addKeepers(keepers);
+    this.markDraftedPlayersInHistoryAsDrafted(draftHistory);
+  }
+
+  markDraftedPlayersInHistoryAsDrafted(draftHistory) {
+    draftHistory.forEach((player) => {
+      this.markPlayerAsDrafted(player.previousPickPlayerId);
+    });
   }
 
   addKeepers(keepers) {
@@ -244,6 +252,20 @@ class DraftInstance {
         if (!previousKeeper.isKeeper || previousKeeper.isKeeper === false) {
           this.markPlayerAsNotDrafted(previousPlayer.previousPickPlayerId);
         }
+
+        new db.ConnectionPool(poolConfig).connect().then((connection) => {
+          return connection.query`
+            UPDATE draft_results
+            SET isDrafted = 0
+            WHERE userId = ${this.currentPickUserId}
+            AND playerId = ${previousPlayer.previousPickPlayerId}
+            AND draftId = ${this.draftId};
+          `;
+        }).then((response) => {
+          debug(`Database marked player as not drafted and rolled back: ${JSON.stringify(response)}`);
+        }).catch((error) => {
+          debug(`Failed to rollback player into DB: ${JSON.stringify(error)}`);
+        });
 
         // Clean out previousPickPlayerId and previousPickUserId
         this.previousPickPlayerId = undefined;

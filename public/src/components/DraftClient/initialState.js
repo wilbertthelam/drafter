@@ -23,7 +23,6 @@ const hardCodedPositions = [
 
 const initialState = {
   players: [],
-  localPlayersDB: [],
   extendedPlayer: {},
   selectedPlayerId: 0,
   playerSearchString: '',

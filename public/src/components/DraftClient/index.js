@@ -162,6 +162,8 @@ class DraftClient extends React.Component {
     });
 
     this.socket.on('draft_complete', () => {
+      // TODO: Change to a draft finished state
+      store.dispatch(playerDrafterActions.updateDraftPauseState(true));
       alert('Draft finished');
     });
   }

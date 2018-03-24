@@ -143,7 +143,7 @@ const playerSearcher = (state = {}, action) => {
           userId: userRosterPlayer.userId,
           playerId: userRosterPlayer.playerId,
           round: userRosterPlayer.round,
-          picKNumber: userRosterPlayer.pickNumber,
+          pickNumber: userRosterPlayer.pickNumber,
           isKeeper: userRosterPlayer.isKeeper,
         };
 
