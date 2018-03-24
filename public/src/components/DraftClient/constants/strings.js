@@ -38,6 +38,7 @@ const strings = {
     no_more_pick: 'You don\'t have anymore picks!',
     next_pick_difference: 'Your next pick is in',
     turn_to_draft: 'Make your pick!',
+    draft_paused: 'Draft is paused!',
   },
 };
 

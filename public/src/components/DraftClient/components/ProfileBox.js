@@ -10,7 +10,11 @@ class ProfileBox extends React.Component {
     let nextUserPickDifference;
     let currentUserPickClass = '';
 
-    if (pickDifference > 0) {
+    if (this.props.isPaused) {
+      nextUserPickString = (
+        <div>{strings.profile_box.draft_paused}</div>
+      );
+    } else if (pickDifference > 0) {
       if (this.props.nextUserPick > -1) {
         nextUserPickDifference = (
           <div>
@@ -53,4 +57,5 @@ export default ProfileBox;
 ProfileBox.propTypes = {
   nextUserPick: PropTypes.number.isRequired,
   currentPick: PropTypes.number.isRequired,
+  isPaused: PropTypes.bool.isRequired,
 };

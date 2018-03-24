@@ -6,6 +6,7 @@ const mapStateToProps = (state) => {
     nextUserPick: state.playerSearcher.nextUserPick,
     currentPick: state.playerSearcher.futurePicks.length > 0 ?
       state.playerSearcher.futurePicks[0].pickNumber : 0,
+    isPaused: state.playerSearcher.isPaused,
   };
 };
 
