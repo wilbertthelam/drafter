@@ -88,7 +88,7 @@ const PlayerRow = ({
     playerRow = (
       <div className="extended-player">
         <div className="player-header">
-          <div className="rank">{player.rank} id: {player.id}</div>
+          <div className="rank">{player.rank}</div>
           <div className="positions">{player.positions} </div>
           <div className="player-name">
             {player.player_name}
