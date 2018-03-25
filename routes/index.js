@@ -39,7 +39,7 @@ router.get('/draftresults/:draftId', (req, res) => {
 });
 
 router.get('/draftroom', auth.isAuthenticated, (req, res) => {
-  res.render('index');
+  res.render('index', { title: 'Field of GGreams Fantasy Drafter' });
 });
 
 /* GET home page. */
