@@ -161,6 +161,13 @@ const draftKeepers = [{
     round: 18,
     pickNumber: 175,
   }],
+}, {
+  userId: 15,
+  playerId: 3,
+  sacrificedPicks: [{
+    round: 9,
+    pickNumber: 84,
+  }],
 }];
 
 module.exports = {

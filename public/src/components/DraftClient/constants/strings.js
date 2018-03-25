@@ -21,8 +21,8 @@ const strings = {
     draft: 'draft player',
   },
   draft_history: {
-    default_history_message: 'draft history',
-    default_roster_message: 'user roster',
+    default_history_message: 'Draft history',
+    default_roster_message: 'User roster',
   },
   ticker: {
     active_pick: 'Pick',

@@ -64,6 +64,18 @@ class PlayerList extends React.Component {
       });
     }
 
+    let adminDiagnostics;
+    if (this.props.isAdmin) {
+      adminDiagnostics = (
+        <div>
+          <span>Current userId: {this.props.userId} </span>
+          <span>Current pick userId: {this.props.currentPickUserId} </span>
+          <span>Currently selected player: {this.props.selectedPlayerId} </span>
+          <span>Is Draft Paused?: {this.props.isPaused ? 'yes' : 'no'} </span>
+        </div>
+      );
+    }
+
     return (
       <div className="component-boxes player-searcher">
         <div className="search-filter">
@@ -84,10 +96,7 @@ class PlayerList extends React.Component {
         <ul className="scroll-list">
           {playerListDisplay}
         </ul>
-        <span>Current userId: {this.props.userId} </span>
-        <span>Current pick userId: {this.props.currentPickUserId} </span>
-        <span>Currently selected player: {this.props.selectedPlayerId} </span>
-        <span>Is Draft Paused?: {this.props.isPaused ? 'yes' : 'no'} </span>
+        {adminDiagnostics}
       </div>
     );
   }
@@ -120,6 +129,7 @@ PlayerList.propTypes = {
   isPaused: PropTypes.bool.isRequired,
   toggleDraftedFilter: PropTypes.func.isRequired,
   filterDrafted: PropTypes.bool.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
 };
 
 export default PlayerList;

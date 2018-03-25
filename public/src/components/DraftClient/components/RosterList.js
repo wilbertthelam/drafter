@@ -78,6 +78,11 @@ class RosterList extends React.Component {
             }
           });
         });
+
+        // If no available position, add player to the end of the list
+        if (!playerAssigned) {
+          rosterPlayers.push(player);
+        }
       });
     });
 
@@ -90,7 +95,7 @@ class RosterList extends React.Component {
       const keeperPill = player && player.isKeeper && player.isKeeper === true ? (<span className="keeper-pill">K</span>) : '';
       return (
         <li key={index}>
-          <span><b>{this.props.rosterPositions[index]} </b></span>
+          <span><b>{this.props.rosterPositions[index] || 'BENCH'} </b></span>
           { keeperPill }
           <span>{player ? player.playerName : ''}</span>
           <span>{player ? player.positions : ''}</span>

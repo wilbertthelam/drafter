@@ -183,7 +183,9 @@ module.exports = (io) => {
       draftOrchestrationAttempt();
     }
 
-    draftInstance.updateUserStatus(userId, true);
+    if (draftInstance) {
+      draftInstance.updateUserStatus(userId, true);
+    }
 
     socket.on('draft_orchestration_preload_success', () => {
       const preloadData = {

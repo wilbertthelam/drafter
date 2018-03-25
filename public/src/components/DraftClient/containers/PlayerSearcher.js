@@ -109,6 +109,7 @@ const mapStateToProps = (state) => {
     extendedPlayer: state.playerSearcher.extendedPlayer,
     isPaused: state.playerSearcher.isPaused,
     filterDrafted: state.playerSearcher.filterDrafted,
+    isAdmin: state.playerSearcher.isAdmin,
   };
 };
 

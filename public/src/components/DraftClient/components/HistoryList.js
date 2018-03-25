@@ -22,7 +22,7 @@ class HistoryList extends React.Component {
 
     if (!historyList || historyList.length === 0) {
       historyList = (
-        <li>{strings.draft_history.default_history_message}</li>
+        <li className="default_message">{strings.draft_history.default_history_message}</li>
       );
     }
 
