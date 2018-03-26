@@ -1,5 +1,5 @@
 # drafter
-
+Fantasy sports custom drafter client.
 # setup
 1. Install latest Node/Git/Yarn.
 1. Clone repo using ```git clone https://github.com/wilbertthelam/drafter.git```.
