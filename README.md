@@ -1,10 +1,10 @@
 # drafter
-
+Fantasy sports custom drafter client.
 # setup
 1. Install latest Node/Git/Yarn.
 1. Clone repo using ```git clone https://github.com/wilbertthelam/drafter.git```.
 2. Inside folder, /drafter folder, run ```yarn install```.
-3. To run server, run ```yarn start```. React will build on save + refresh, Node server chnages require reboot (ctrl+c).
+3. To run server, run ```yarn start```. React will build on save + browser refresh, Node server changes require reboot (ctrl+c).
 
 # test accounts
 test@test.com<br />
