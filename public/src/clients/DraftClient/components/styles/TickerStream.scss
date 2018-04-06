@@ -1,0 +1,111 @@
+$app-dark: #21170e;
+$app-light: #fff5ea;
+$app-middle: #F6C28B;
+$app-accent: #5296A5;
+$app-accent-light: #82DDF0;
+
+$circle-radius: 1.2rem;
+
+.ticker-stream {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+
+  .keeper-highlight {
+    background: #DF5A5A !important;     
+  }
+
+  .active-pick:first-child {
+    margin-right: ($circle-radius * 2 + 2rem) * -1;
+    background: #DF5A5A;
+    color: white;
+    font-weight: 500;
+    border-radius: 5rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 1.6rem;
+    border: #D7D7D7.3rem solid;
+  }
+
+  .user-turn {
+    background: #F6C28B !important;
+    color: white;
+  }
+
+  .active-pick {
+    padding: 0;
+    display: flex;
+    margin-right: .1rem;
+    background: white;
+    border-radius: 5rem 5rem 5rem 5rem;
+    border: #D7D7D7.1rem solid;
+    margin: .8rem;
+
+    .active-pick-body {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .pick-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: $app-accent;
+        color: $app-light;
+        font-size: 1.5rem;
+        border-radius: 100%;
+        width: $circle-radius * 2;
+        height: $circle-radius * 2;
+        padding: .5rem;
+      }
+
+      .round-number {
+        padding: .5rem 4.8rem .5rem 1.4rem;
+
+        & .active-pick {
+          padding: -1rem;
+        }
+      }
+
+      .picture {
+        border: black .1rem dotted;
+      }
+
+      .active-pick-info {
+        display: flex;
+        flex-direction: column;
+        padding-left: .5rem;
+      }
+
+      .faded {
+        color: #7D7D7D;
+      }
+
+      .pick-name {
+        font-size: 1.2rem;
+        padding-right: 1.3rem;
+        white-space: nowrap;
+      }
+
+      .pick-team {
+        font-size: 1rem;
+        white-space: nowrap;
+        padding-right: 1.3rem;
+      }
+    }
+
+    .available-icon {
+      color: green;
+      font-size: .7rem;
+    }
+
+    .offline-icon {
+      color: red;
+      font-size: .7rem;
+    }
+  }
+}
+
+.ticker-stream::-webkit-scrollbar {
+    display: none;
+}

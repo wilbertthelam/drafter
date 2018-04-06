@@ -1,0 +1,100 @@
+.player-row {
+  span {
+    vertical-align: middle;
+    padding: .1rem;
+  }
+
+  .standard-row {
+    display: flex;
+
+    div {
+      display: flex;
+      flex-direction: row;
+
+      overflow: hidden;
+      white-space: nowrap;
+      padding-right: .5rem;
+      text-overflow: ellipsis;
+   }
+  }
+
+  .extended-player {
+    display: flex;
+    flex-direction: column;
+
+    .player-header {
+      margin-bottom: 1rem;
+      display: flex;
+      font-size: 1.8rem;
+      font-weight: 500;
+      width: 100%;
+
+      .rank, .positions, .player-name {
+        width: auto;
+        margin-right: 3rem;
+      }
+    }
+
+    .body-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .player-body {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .standard-stats, .advanced-stats, .slash-stats {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 1rem;
+
+      div {
+        display: flex;
+        flex-direction: row;
+        padding: 0;
+        margin-right: .5rem;
+
+        .stat-label {
+          font-weight: 400;
+        }
+
+        div {
+          display: flex;
+          text-align: center;
+          flex-direction: column;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .notes {
+      font-weight: 300;
+      font-size: 1.3rem;
+      display: flex;
+
+      .note-icon {
+        margin-right: .5rem;
+        color: #5296A5;
+      }
+    }
+  }
+
+  .extended-player > div {
+    overflow: visible;
+    white-space: normal;
+  }
+
+  .stat-label {
+    color: #757575;
+    margin-right: 0;
+    font-weight: 300;
+  }
+}
+
+.player-drafted {
+  span {
+    text-decoration: line-through;
+  }
+}

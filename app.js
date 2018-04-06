@@ -7,13 +7,15 @@ const bodyParser = require('body-parser');
 const socketIo = require('socket.io');
 const session = require('express-session');
 
-// // Hot reloading middleware
-// const webpack = require('webpack');
-// const webpackDevMiddleware = require('webpack-dev-middleware');
-// const config = require('./webpack.config.js');
+const devEnv = process.env.NODE_ENV === 'development';
+
+// Hot reloading middleware
+const webpack = devEnv ? require('webpack') : undefined;
+const webpackDevMiddleware = devEnv ? require('webpack-dev-middleware') : undefined;
+const config = devEnv ? require('./webpack.config.js') : undefined;
 
 const app = express();
-// const compiler = webpack(config);
+const compiler = devEnv ? webpack(config) : undefined;
 const io = socketIo();
 
 const sessionMiddleware = session({
@@ -34,12 +36,11 @@ const users = require('./routes/users');
 const draftroom = require('./routes/draftroom')(io);
 
 // Dev hot loading
-// TODO: Wrap in env development clause.
-// if (process.env.NODE_ENV === 'development') {
-// app.use(webpackDevMiddleware(compiler, {
-//   publicPath: config.output.publicPath,
-// }));
-// }
+if (devEnv) {
+  app.use(webpackDevMiddleware(compiler, {
+    publicPath: config.output.publicPath,
+  }));
+}
 
 app.set('io', io);
 

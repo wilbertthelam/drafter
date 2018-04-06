@@ -1,0 +1,42 @@
+$dark: #00120B;
+$green: #35605A;
+$blue: #6B818C;
+$white: #D8E4FF;
+$highlight: #31E981;
+
+.history-list {
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    overflow-y: scroll;
+    height: 63rem;
+  }
+
+  .default_message {
+    padding-top: 10rem;
+    text-align: center;
+  }
+
+  li {
+    padding: .3rem;
+    color: $green;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: .2rem;
+
+    span {
+      padding-right: .5rem;
+    }
+  }
+
+  li:hover {
+    background: $highlight;
+    color: $dark;
+  }
+
+  .selectedPlayerHighlight {
+    background: $blue;
+    color: $white;
+  }
+}

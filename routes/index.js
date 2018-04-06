@@ -1,7 +1,6 @@
 const express = require('express');
-const db = require('mssql');
-const poolConfig = require('./utils/db');
 const auth = require('./utils/auth');
+const loginService = require('./services/loginService');
 
 const router = express.Router();
 
@@ -9,42 +8,26 @@ router.get('/login', (req, res) => {
   res.render('login');
 });
 
-/* GET users listing. */
+/* POST for user login attempt. */
 router.post('/login', (req, res) => {
-  if (req.body && req.body.email && req.body.password) {
-    const email = req.body.email;
-    const password = req.body.password;
-
-    new db.ConnectionPool(poolConfig).connect().then((connection) => {
-      return connection.query`SELECT * FROM users WHERE email = ${email} AND password = ${password}`;
-    }).then((response) => {
-      const data = response.recordset;
-      // If no user match, return to login with error
-      if (!data || data.length < 1) {
-        return res.render('login', { valid: false });
-      }
-      req.session.userId = data[0].id;
-      req.session.isAdmin = data[0].isAdmin;
-      return res.redirect('/');
-    }).catch((error) => {
-      return res.render('login', { valid: false, error });
-    });
-  } else {
-    return res.render('login', { valid: false, error: 'Could not send data or no data was provided.' });
-  }
+  return loginService.attemptLogin(req, res);
 });
 
-router.get('/draftresults/:draftId', (req, res) => {
-  res.render('draftresults');
-});
+// router.get('/draftresults/:draftId', (req, res) => {
+//   res.render('draftresults');
+// });
 
 router.get('/draftroom', auth.isAuthenticated, (req, res) => {
   res.render('index', { title: 'Field of GGreams Fantasy Drafter' });
 });
 
+router.get('/main', auth.isAuthenticated, (req, res) => {
+  res.render('main', { title: 'Draft Home | Drafter' });
+});
+
 /* GET home page. */
 router.get('/', auth.isAuthenticated, (req, res) => {
-  res.redirect('/draftroom');
+  res.redirect('/main');
 });
 
 module.exports = router;

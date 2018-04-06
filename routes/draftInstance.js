@@ -1,3 +1,9 @@
+/**
+ * This is a single instance of a draft.
+ * All actions pertaining to a specific draft are processed here.
+ * Globals pertaining to a specific draft are contained here.
+ */
+
 const _ = require('lodash');
 const debug = require('debug')('drafter');
 const db = require('mssql');
@@ -5,14 +11,14 @@ const poolConfig = require('./utils/db');
 
 class DraftInstance {
   constructor(
-    players,
-    users,
-    draftOrder,
-    draftHistory,
-    allUsersRoster,
-    draftId,
-    keepers,
-    currentPickIndex,
+    players, // List of all players eligible in the draft (regardless of drafted status)
+    users, // List of users who can draft inside this instance
+    draftOrder, // List containing the full draft picks, in order, for all users
+    draftHistory, // List containing the drafted players
+    allUsersRoster, // Map of rosters for each user (user => [...player])
+    draftId, // Unique draft identification
+    keepers, // List of keepers
+    currentPickIndex, // Current pick index of the draft
   ) {
     this.players = players || [];
     this.users = users || [];
@@ -20,14 +26,18 @@ class DraftInstance {
     this.draftHistory = draftHistory || [];
     this.allUsersRoster = allUsersRoster;
     this.currentPickIndex = currentPickIndex || 0;
+    this.draftId = draftId;
+
     this.previousPickPlayerId = undefined;
     this.previousPickUserId = undefined;
     this.currentPickUserId = undefined;
-    this.futurePicks = this.createFuturePicks(0);
+    this.futurePicks = this.createFuturePicks(0); // Creates ticker picks
     this.draftPaused = false;
-    this.draftId = draftId;
 
+    // Populate draft instance with keepers
     this.addKeepers(keepers);
+
+    // Populate draft history (useful for re-initialization)
     this.markDraftedPlayersInHistoryAsDrafted(draftHistory);
   }
 
@@ -39,7 +49,7 @@ class DraftInstance {
 
   addKeepers(keepers) {
     keepers.forEach((keeper) => {
-      // Update players by marking them as Drafted
+      // Update players by marking them as drafted
       this.markPlayerAsDrafted(keeper.playerId);
 
       // Add player to the users roster
@@ -64,6 +74,7 @@ class DraftInstance {
   }
 
   currentPickIsKeeper() {
+    // If pick is outside range of possible picks, return false
     if (this.currentPickIndex >= this.draftOrder.length) {
       return false;
     }
@@ -123,7 +134,7 @@ class DraftInstance {
   }
 
   draftPlayer(playerId, userId) {
-    if (this.draftPaused === true) {
+    if (this.isDraftPaused()) {
       debug('Drafted paused right now, cannot draft.');
       return 'FAIL_DRAFT_PAUSED';
     }
@@ -212,7 +223,7 @@ class DraftInstance {
   createFuturePicks(pickIndex) {
     return this.draftOrder.slice(
       pickIndex,
-      pickIndex + 10,
+      pickIndex + 10, // TODO: specify # of future picks
     );
   }
 
@@ -275,7 +286,7 @@ class DraftInstance {
 
         return resolve();
       }
-      return reject(new Error('Current pick is already the start.'));
+      return reject(new Error('Current pick is already at the start.'));
     });
   }
 
@@ -349,7 +360,7 @@ class DraftInstance {
     return this.currentPickIndex;
   }
 
-  getIsPaused() {
+  isDraftPaused() {
     return this.draftPaused;
   }
 }

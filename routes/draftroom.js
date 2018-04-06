@@ -193,7 +193,7 @@ module.exports = (io) => {
         futurePicks: draftInstance.createFuturePicks(draftInstance.getCurrentPickIndex()),
         userRoster: draftInstance.getUserRoster(userId),
         currentPickUserId: draftInstance.getCurrentUserPick(),
-        isPaused: draftInstance.getIsPaused(),
+        isPaused: draftInstance.isDraftPaused(),
         nextUserPick: draftInstance.getNextPickNumber(userId),
       };
       debug(`userId: ${userId} has successfully downloaded setup data`);
@@ -244,6 +244,12 @@ module.exports = (io) => {
 
     // TODO: rewrite this monstrosity
     socket.on('search_player_by_position', (position) => {
+      const outfieldPositions = ['rf', 'cf', 'lf'];
+
+      const positionIncludes = (player, localPosition) => {
+        return player.positions.toLowerCase().includes(localPosition);
+      };
+
       const cleanedPosition = position.toLowerCase();
       const players = draftInstance.getPlayers();
       let playersByPosition = [];
@@ -251,18 +257,17 @@ module.exports = (io) => {
         playersByPosition = players;
       } else if (cleanedPosition === 'of') {
         players.forEach((player) => {
-          if (player.positions &&
-            (player.positions.toLowerCase().includes('rf') ||
-            player.positions.toLowerCase().includes('cf') ||
-            player.positions.toLowerCase().includes('lf'))
-          ) {
+          if (player.positions && outfieldPositions.some(positionIncludes(player, position))) {
             playersByPosition.push(player);
           }
         });
       } else if (cleanedPosition === 'c') {
         players.forEach((player) => {
           const positions = player.positions.split(',');
-          if (positions.includes('C')) {
+          const lowerCasePositions = positions.map((mappedPosition) => {
+            return mappedPosition.toLowerCase();
+          });
+          if (lowerCasePositions.includes('c')) {
             playersByPosition.push(player);
           }
         });
@@ -284,10 +289,8 @@ module.exports = (io) => {
         playersByName = players;
       } else {
         players.forEach((player) => {
-          if (
-            player.player_name &&
-            player.player_name.toLowerCase().includes(cleanedPlayerSearchString)
-          ) {
+          if (player.player_name &&
+              player.player_name.toLowerCase().includes(cleanedPlayerSearchString)) {
             playersByName.push(player);
           }
         });
@@ -301,14 +304,14 @@ module.exports = (io) => {
 
     // Admin socket responsibilities
     socket.on('admin_roll_back_pick', () => {
-      if (draftInstance.getIsPaused()) {
+      if (draftInstance.isDraftPaused()) {
         draftInstance.rollbackPick().then(() => {
           const response = {
             draftHistory: draftInstance.getDraftHistory(),
             futurePicks: draftInstance.getFuturePicks(),
             userRoster: draftInstance.getUserRoster(draftInstance.currentPickUserId),
             currentPickUserId: draftInstance.getCurrentUserPick(),
-            isPaused: draftInstance.getIsPaused(),
+            isPaused: draftInstance.isDraftPaused(),
             // TODO: just mark player as undrafted
             players: draftInstance.getPlayers(),
             previousPickUserId: draftInstance.getPreviousPickUserId(),

@@ -1,3 +1,8 @@
+/**
+ * DB configuration
+ * TODO: Migrate to secure area (populate on build?)
+ */
+
 const poolConfig = {
   user: 'drafter_admin',
   password: 'Ichiro51',
@@ -5,7 +10,7 @@ const poolConfig = {
   port: 1433,
   database: 'drafter_db',
   options: {
-    encrypt: true,
+    encrypt: true, // Needed for Azure access
   },
 };
 

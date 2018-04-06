@@ -9,11 +9,13 @@ router.get('/', (req, res) => {
   res.send('API for Drafter.');
 });
 
-/* GET list of all players for a userId */
+/* GET list of ALL players for a userId */
 router.get('/players/id/:userId', (req, res) => {
   const userId = req.params.userId;
   new db.ConnectionPool(poolConfig).connect().then((connection) => {
-    return connection.query`SELECT * FROM players_rankings_full WHERE id = ${userId}`;
+    return connection.query`
+      SELECT * FROM players_rankings_full
+      WHERE id = ${userId};`;
   }).then((response) => {
     const data = response.recordset;
     return res.json({ data });
@@ -22,14 +24,14 @@ router.get('/players/id/:userId', (req, res) => {
   });
 });
 
-/* GET list of all players that match name */
+/* GET list of ALL players that match name */
 router.get('/players/name/:playerSearchString', (req, res) => {
   const playerSearchString = `%${req.params.playerSearchString}%`;
   new db.ConnectionPool(poolConfig).connect().then((connection) => {
     return connection.query`
       SELECT * FROM players_rankings_full
       WHERE player_name LIKE ${playerSearchString}
-      ORDER BY rank
+      ORDER BY rank;
     `;
   }).then((response) => {
     const data = response.recordset;
@@ -39,14 +41,14 @@ router.get('/players/name/:playerSearchString', (req, res) => {
   });
 });
 
-/* GET list of all players by filter */
+/* GET list of ALL players by filter */
 router.get('/players/position/:position', (req, res) => {
   const position = `%${req.params.position}%`;
   new db.ConnectionPool(poolConfig).connect().then((connection) => {
     return connection.query`
       SELECT * FROM players_rankings_full
       WHERE positions LIKE ${position}
-      ORDER BY rank
+      ORDER BY rank;
     `;
   }).then((response) => {
     const data = response.recordset;
@@ -56,7 +58,7 @@ router.get('/players/position/:position', (req, res) => {
   });
 });
 
-/* GET list of all players */
+/* GET list of ALL players */
 router.get('/players', (req, res) => {
   apiHelper.getPlayers().then((data) => {
     return res.json({ data });
@@ -65,12 +67,7 @@ router.get('/players', (req, res) => {
   });
 });
 
-/* POST group of players */
-router.post('/players', (req, res) => {
-  res.json({ success: true });
-});
-
-/* GET list of all players */
+/* GET list of ALL users */
 router.get('/users', (req, res) => {
   apiHelper.getUsers().then((data) => {
     return res.json({ data });

@@ -5,9 +5,10 @@ const BUILD_DIR = path.join(__dirname, 'public', 'build');
 
 module.exports = {
   context: CLIENT_DIR,
-  entry: [
-    './index',
-  ],
+  entry: {
+    draftClient: './clients/DraftClient/index',
+    mainClient: './clients/MainClient/index',
+  },
   module: {
     rules: [{
       test: /\.(js|jsx)$/,
@@ -24,7 +25,8 @@ module.exports = {
   devtool: 'inline-source-map',
   output: {
     path: BUILD_DIR,
-    filename: 'bundle.js',
+    filename: '[name].js',
     publicPath: '/build/',
   },
+  mode: 'development', // Change to prod on release
 };
