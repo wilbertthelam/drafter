@@ -27,7 +27,7 @@ router.get('/main', auth.isAuthenticated, (req, res) => {
 
 /* GET home page. */
 router.get('/', auth.isAuthenticated, (req, res) => {
-  res.redirect('/main');
+  res.redirect('draftroom');
 });
 
 module.exports = router;

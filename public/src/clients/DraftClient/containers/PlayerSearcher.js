@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import * as playerSearcherActions from './../actions/playerSearcherActions';
 import * as playerDrafterActions from './../actions/playerDrafterActions';
 import PlayerList from './../components/PlayerList';
+import sport from "./../currentSport";
 
 /**
  * Search for a player given the user inputted string
@@ -29,50 +30,101 @@ const searchPlayer = (playerSearchString, players) => {
  * Search for a player given the user selected position
  */
 const searchPlayerByPosition = (position, players) => {
-  return (dispatch) => {
-    dispatch(playerSearcherActions.searchPlayersLoading(true));
-
-    // Clear player search string inside text box
-    dispatch(playerSearcherActions.changePlayerSearchString(''));
-
-    const cleanedPosition = position.toLowerCase();
-    if (!cleanedPosition || cleanedPosition.toLowerCase() === 'all') {
-      players.forEach((player) => {
-        player.hideOnBoard = false;
-      });
-    } else if (cleanedPosition === 'of') {
-      players.forEach((player) => {
-        if (player.positions &&
-          (player.positions.toLowerCase().includes('rf') ||
-          player.positions.toLowerCase().includes('cf') ||
-          player.positions.toLowerCase().includes('lf'))
-        ) {
+  if (sport === "baseball") {
+    return (dispatch) => {
+      dispatch(playerSearcherActions.searchPlayersLoading(true));
+  
+      // Clear player search string inside text box
+      dispatch(playerSearcherActions.changePlayerSearchString(''));
+  
+      const cleanedPosition = position.toLowerCase();
+      if (!cleanedPosition || cleanedPosition.toLowerCase() === 'all') {
+        players.forEach((player) => {
           player.hideOnBoard = false;
-        } else {
-          player.hideOnBoard = true;
-        }
-      });
-    } else if (cleanedPosition === 'c') {
-      players.forEach((player) => {
-        const positions = player.positions.split(',');
-        if (positions.includes('C')) {
+        });
+      } else if (cleanedPosition === 'of') {
+        players.forEach((player) => {
+          if (player.positions &&
+            (player.positions.toLowerCase().includes('rf') ||
+            player.positions.toLowerCase().includes('cf') ||
+            player.positions.toLowerCase().includes('lf'))
+          ) {
+            player.hideOnBoard = false;
+          } else {
+            player.hideOnBoard = true;
+          }
+        });
+      } else if (cleanedPosition === 'c') {
+        players.forEach((player) => {
+          const positions = player.positions.split(',');
+          if (positions.includes('C')) {
+            player.hideOnBoard = false;
+          } else {
+            player.hideOnBoard = true;
+          }
+        });
+      } else {
+        players.forEach((player) => {
+          if (player.positions && player.positions.toLowerCase().includes(cleanedPosition)) {
+            player.hideOnBoard = false;
+          } else {
+            player.hideOnBoard = true;
+          }
+        });
+      }
+      dispatch(playerSearcherActions.searchPlayersLoading(false));
+      dispatch(playerSearcherActions.searchPlayersSuccess(players));
+    };
+  } else if (sport === "basketball") {
+    return (dispatch) => {
+      dispatch(playerSearcherActions.searchPlayersLoading(true));
+  
+      // Clear player search string inside text box
+      dispatch(playerSearcherActions.changePlayerSearchString(''));
+  
+      const cleanedPosition = position.toLowerCase();
+      if (!cleanedPosition || cleanedPosition.toLowerCase() === 'all') {
+        players.forEach((player) => {
           player.hideOnBoard = false;
-        } else {
-          player.hideOnBoard = true;
-        }
-      });
-    } else {
-      players.forEach((player) => {
-        if (player.positions && player.positions.toLowerCase().includes(cleanedPosition)) {
-          player.hideOnBoard = false;
-        } else {
-          player.hideOnBoard = true;
-        }
-      });
-    }
-    dispatch(playerSearcherActions.searchPlayersLoading(false));
-    dispatch(playerSearcherActions.searchPlayersSuccess(players));
-  };
+        });
+      } else if (cleanedPosition === 'f') {
+        players.forEach((player) => {
+          if (player.positions &&
+            (player.positions.toLowerCase().includes('f') ||
+            player.positions.toLowerCase().includes('pf') ||
+            player.positions.toLowerCase().includes('sf'))
+          ) {
+            player.hideOnBoard = false;
+          } else {
+            player.hideOnBoard = true;
+          }
+        });
+      }  else if (cleanedPosition === 'g') {
+        players.forEach((player) => {
+          if (player.positions &&
+            (player.positions.toLowerCase().includes('g') ||
+            player.positions.toLowerCase().includes('pg') ||
+            player.positions.toLowerCase().includes('sg'))
+          ) {
+            player.hideOnBoard = false;
+          } else {
+            player.hideOnBoard = true;
+          }
+        });
+      } else {
+        players.forEach((player) => {
+          if (player.positions && player.positions.toLowerCase().includes(cleanedPosition)) {
+            player.hideOnBoard = false;
+          } else {
+            player.hideOnBoard = true;
+          }
+        });
+      }
+      dispatch(playerSearcherActions.searchPlayersLoading(false));
+      dispatch(playerSearcherActions.searchPlayersSuccess(players));
+    };
+  }
+  
 };
 
 const draftSelectedPlayer = (selectedPlayerId, userId, socket) => {

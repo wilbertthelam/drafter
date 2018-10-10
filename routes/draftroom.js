@@ -2,7 +2,7 @@ const express = require('express');
 const debug = require('debug')('drafter');
 const DraftInstance = require('./draftInstance');
 const apiHelper = require('./apiHelper');
-const mockData = require('./utils/fieldOfGGreams');
+const mockData = require('./utils/ggBasketball');
 
 const router = express.Router();
 

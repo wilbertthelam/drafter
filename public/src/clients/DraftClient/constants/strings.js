@@ -4,6 +4,7 @@ const strings = {
   },
   position_filter: {
     all: 'All',
+    // Baseball
     starting_pitcher: 'SP',
     relief_pitcher: 'RP',
     catcher: 'C',
@@ -13,6 +14,14 @@ const strings = {
     third_baseman: '3B',
     outfielder: 'OF',
     designated_hitter: 'DH',
+    // Basketball
+    pf: 'PF',
+    pg: 'PG',
+    c: 'C',
+    sg: 'SG',
+    sf: 'SF',
+    f: 'F',
+    g: 'G'
   },
   filter_drafted: {
     hide_drafted: 'hide drafted',
@@ -40,6 +49,10 @@ const strings = {
     turn_to_draft: 'Make your pick!',
     draft_paused: 'Draft is paused!',
   },
+  sport: {
+    basketball: "basketball",
+    baseball: "baseball"
+  }
 };
 
 export default strings;

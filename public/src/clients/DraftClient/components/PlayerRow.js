@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import * as noteIcon from '@fortawesome/fontawesome-free-regular/faComment';
-
-// import strings from './../constants/strings';
+import sport from "./../currentSport";
+import strings from './../constants/strings';
 import DraftButton from './DraftButton';
 import './styles/PlayerRow.scss';
 
@@ -42,101 +42,171 @@ const PlayerRow = ({
     className += ' player-drafted';
   }
 
-  let positionSpecificStats;
-  if (player.positions.includes('SP') || player.positions.includes('RP')) {
-    positionSpecificStats = (
-      <div>
-        <div className="stat"><div className="stat-label">W</div> <div>{player.W}</div></div>
-        <div className="stat"><div className="stat-label">K</div> <div>{player.K}</div></div>
-        <div className="stat"><div className="stat-label">SV</div> <div>{player.SV}</div></div>
-        <div className="stat"><div className="stat-label">ERA</div> <div>{player.ERA}</div></div>
-        <div className="stat"><div className="stat-label">WHIP</div> <div>{player.WHIP}</div></div>
-      </div>
-    );
-  } else {
-    const standardSlashLine = (
-      <div className="stat">
-        <div>{player.AVG}/{player.OBP}/{player.SLG}</div>
-      </div>
-    );
-    positionSpecificStats = (
-      <div>
-        <div className="stat"><div className="stat-label">R</div> <div>{player.R}</div></div>
-        <div className="stat"><div className="stat-label">HR</div> <div>{player.HR}</div></div>
-        <div className="stat"><div className="stat-label">SB</div> <div>{player.SB}</div></div>
-        <div className="stat"><div className="stat-label">RBI</div> <div>{player.RBI}</div></div>
-        { selectedPlayerId !== player.id ? standardSlashLine : '' }
-      </div>
-    );
-  }
-
-  let playerRow = (
-    <div className="standard-row">
-      <div className="rank">{player.rank}</div>
-      <div className="positions">{player.positions}</div>
-      <div className="player-name">
-        <span>
-          <span>{player.player_name}</span>
-          <span className="mlb-team">{player.mlb_team}</span>
-        </span>
-      </div>
-      { positionSpecificStats }
-    </div>
-  );
-
-  if (selectedPlayerId === player.id) {
-    playerRow = (
-      <div className="extended-player">
-        <div className="player-header">
-          <div className="rank">{player.rank}</div>
-          <div className="positions">{player.positions} </div>
-          <div className="player-name">
-            {player.player_name}
+  if (sport === strings.sport.baseball) {
+    let positionSpecificStats;
+    if (player.positions.includes('SP') || player.positions.includes('RP')) {
+      positionSpecificStats = (
+        <div>
+          <div className="stat"><div className="stat-label">W</div> <div>{player.W}</div></div>
+          <div className="stat"><div className="stat-label">K</div> <div>{player.K}</div></div>
+          <div className="stat"><div className="stat-label">SV</div> <div>{player.SV}</div></div>
+          <div className="stat"><div className="stat-label">ERA</div> <div>{player.ERA}</div></div>
+          <div className="stat"><div className="stat-label">WHIP</div> <div>{player.WHIP}</div></div>
+        </div>
+      );
+    } else {
+      const standardSlashLine = (
+        <div className="stat">
+          <div>{player.AVG}/{player.OBP}/{player.SLG}</div>
+        </div>
+      );
+      positionSpecificStats = (
+        <div>
+          <div className="stat"><div className="stat-label">R</div> <div>{player.R}</div></div>
+          <div className="stat"><div className="stat-label">HR</div> <div>{player.HR}</div></div>
+          <div className="stat"><div className="stat-label">SB</div> <div>{player.SB}</div></div>
+          <div className="stat"><div className="stat-label">RBI</div> <div>{player.RBI}</div></div>
+          { selectedPlayerId !== player.id ? standardSlashLine : '' }
+        </div>
+      );
+    }
+  
+    let playerRow = (
+      <div className="standard-row">
+        <div className="rank">{player.rank}</div>
+        <div className="positions">{player.positions}</div>
+        <div className="player-name">
+          <span>
+            <span>{player.player_name}</span>
             <span className="mlb-team">{player.mlb_team}</span>
-          </div>
-          <div className="draft-button">{ displayDraftButton }</div>
+          </span>
         </div>
-        <div className="player-body">
-          <div className="body-left">
-            <div className="standard-stats">
-              { positionSpecificStats }
-            </div>
-            <div className="slash-stats">
-              <div>
-                <div><div className="stat-label">AVG</div> <div>{player.AVG || '--'}</div></div>
-                <div><div className="stat-label">OBP</div> <div>{player.OBP || '--'}</div></div>
-                <div><div className="stat-label">SLG</div> <div>{player.SLG || '--'}</div></div>
-              </div>
-            </div>
-            <div className="advanced-stats">
-              <div>
-                <div><div className="stat-label">ADP</div> <div>{player.adp}</div></div>
-                <div><div className="stat-label">AB</div> <div>{player.AB || '--'}</div></div>
-                <div><div className="stat-label">IP</div> <div>{player.IP || '--'}</div></div>
-              </div>
-            </div>
-          </div>
-          <div className="notes">
-            <div>
-              <span className="note-icon">
-                <FontAwesomeIcon icon={noteIcon} />
-              </span>
-              {player.notes}
-            </div>
-          </div>
-        </div>
+        { positionSpecificStats }
       </div>
     );
+  
+    if (selectedPlayerId === player.id) {
+      playerRow = (
+        <div className="extended-player">
+          <div className="player-header">
+            <div className="rank">{player.rank}</div>
+            <div className="positions">{player.positions} </div>
+            <div className="player-name">
+              {player.player_name}
+              <span className="mlb-team">{player.mlb_team}</span>
+            </div>
+            <div className="draft-button">{ displayDraftButton }</div>
+          </div>
+          <div className="player-body">
+            <div className="body-left">
+              <div className="standard-stats">
+                { positionSpecificStats }
+              </div>
+              <div className="slash-stats">
+                <div>
+                  <div><div className="stat-label">AVG</div> <div>{player.AVG || '--'}</div></div>
+                  <div><div className="stat-label">OBP</div> <div>{player.OBP || '--'}</div></div>
+                  <div><div className="stat-label">SLG</div> <div>{player.SLG || '--'}</div></div>
+                </div>
+              </div>
+              <div className="advanced-stats">
+                <div>
+                  <div><div className="stat-label">ADP</div> <div>{player.adp}</div></div>
+                  <div><div className="stat-label">AB</div> <div>{player.AB || '--'}</div></div>
+                  <div><div className="stat-label">IP</div> <div>{player.IP || '--'}</div></div>
+                </div>
+              </div>
+            </div>
+            <div className="notes">
+              <div>
+                <span className="note-icon">
+                  <FontAwesomeIcon icon={noteIcon} />
+                </span>
+                {player.notes}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return (
+      <li
+        onClick={onPlayerRowClick}
+        onKeyPress={onKeyPress}
+        className={className}
+      >
+        { playerRow }
+      </li>
+    );
+  } else if (sport === strings.sport.basketball) {
+    let positionSpecificStats;
+    positionSpecificStats = (
+      <div>
+        <div className="stat"><div className="stat-label">PTS</div> <div>{player['pts']}</div></div>
+        <div className="stat"><div className="stat-label">REB</div> <div>{player['reb']}</div></div>
+        <div className="stat"><div className="stat-label">AST</div> <div>{player['ast']}</div></div>
+        <div className="stat"><div className="stat-label">BLK</div> <div>{player['blk']}</div></div>
+        <div className="stat"><div className="stat-label">STL</div> <div>{player['stl']}</div></div>
+        <div className="stat"><div className="stat-label">3PM</div> <div>{player['3pm']}</div></div>
+      </div>
+    );
+
+    let playerRow = (
+      <div className="standard-row">
+        <div className="rank">ID: {player.id}</div>
+        <div className="rank">{player.rank}</div>
+        <div className="positions">{player.positions}</div>
+        <div className="player-name">
+          <span>
+            <span>{player.player_name}</span>
+            <span className="mlb-team">{player.team}</span>
+          </span>
+        </div>
+        { positionSpecificStats }
+      </div>
+    );
+
+    if (selectedPlayerId === player.id) {
+      playerRow = (
+        <div className="extended-player">
+          <div className="player-header">
+            <div className="rank">{player.rank}</div>
+            <div className="positions">{player.positions} </div>
+            <div className="player-name">
+              {player.player_name}
+              <span className="mlb-team">{player.team}</span>
+            </div>
+            <div className="draft-button">{ displayDraftButton }</div>
+          </div>
+          <div className="player-body">
+            <div className="body-left">
+              <div className="standard-stats">
+                { positionSpecificStats }
+              </div>
+              <div className="advanced-stats">
+                <div>
+                  <div><div className="stat-label">FG%</div> <div>{player['fg%']}</div></div>
+                  <div><div className="stat-label">FT%</div> <div>{player['ft%']}</div></div>
+                  <div><div className="stat-label">ADP</div> <div>{player['adp']}</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return (
+      <li
+        onClick={onPlayerRowClick}
+        onKeyPress={onKeyPress}
+        className={className}
+      >
+        { playerRow }
+      </li>
+    );
   }
-  return (
-    <li
-      onClick={onPlayerRowClick}
-      onKeyPress={onKeyPress}
-      className={className}
-    >
-      { playerRow }
-    </li>
-  );
+
+  
 };
 
 export default PlayerRow;

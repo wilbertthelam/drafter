@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import strings from './../constants/strings';
+import sport from './../currentSport';
 import './styles/RosterList.scss';
 
 class RosterList extends React.Component {
@@ -22,16 +23,31 @@ class RosterList extends React.Component {
   }
 
   playerFit(position, playerPosition) {
-    const positionMap = {
-      c: ['c'],
-      '1b/3b': ['1b', '3b'],
-      '2b/ss': ['2b', 'ss'],
-      util: ['c', '1b', '2b', 'ss', '3b', 'rf', 'cf', 'lf', 'dh'],
-      of: ['rf', 'cf', 'lf'],
-      p: ['sp', 'rp'],
-      rp: ['rp'],
-      bench: ['c', '1b', '2b', 'ss', '3b', 'rf', 'cf', 'lf', 'dh', 'sp', 'rp'],
-    };
+    let positionMap = {};
+    if (sport === 'baseball') {
+      positionMap = {
+        c: ['c'],
+        '1b/3b': ['1b', '3b'],
+        '2b/ss': ['2b', 'ss'],
+        util: ['c', '1b', '2b', 'ss', '3b', 'rf', 'cf', 'lf', 'dh'],
+        of: ['rf', 'cf', 'lf'],
+        p: ['sp', 'rp'],
+        rp: ['rp'],
+        bench: ['c', '1b', '2b', 'ss', '3b', 'rf', 'cf', 'lf', 'dh', 'sp', 'rp'],
+      };
+    } else if (sport === 'basketball') {
+      positionMap = {
+        pg: ['pg'],
+        pf: ['pf'],
+        sf: ['sf'],
+        sg: ['sg'],
+        c: ['c'],
+        g: ['g', 'pg', 'sg'],
+        f: ['f', 'pf', 'sf'],
+        util: ['pg', 'pf', 'sf', 'sg', 'f', 'g', 'c'],
+        bench: ['pg', 'pf', 'sf', 'sg', 'f', 'g', 'c'],
+      };
+    }
 
     const mapping = positionMap[position.toLowerCase()];
     if (!mapping) {

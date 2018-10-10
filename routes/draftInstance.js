@@ -8,6 +8,7 @@ const _ = require('lodash');
 const debug = require('debug')('drafter');
 const db = require('mssql');
 const poolConfig = require('./utils/db');
+const sport = require('./utils/currentSport');
 
 class DraftInstance {
   constructor(
@@ -175,7 +176,11 @@ class DraftInstance {
 
   markPlayerAsDrafted(playerId) {
     const playerToMark = this.findPlayer(playerId);
-    playerToMark.isDrafted = true;
+    if (playerToMark) {
+      playerToMark.isDrafted = true;
+    } else {
+      debug(`Failed to find playerId: ${playerId} in the list of players when attempting to mark as drafted`);
+    }
   }
 
   markPlayerAsNotDrafted(playerId) {
@@ -194,12 +199,20 @@ class DraftInstance {
     };
 
     new db.ConnectionPool(poolConfig).connect().then((connection) => {
-      return connection.query`
-        INSERT INTO draft_results (playerId, userId, pickRound, pickNumber, draftId, isDrafted)
+      if (sport === "baseball") {
+        return connection.query`
+          INSERT INTO draft_results (playerId, userId, pickRound, pickNumber, draftId, isDrafted)
+          VALUES (${dbModel.playerId}, ${dbModel.userId},
+            ${dbModel.pickRound}, ${dbModel.pickNumber},
+            ${dbModel.draftId}, ${dbModel.isDrafted});`;
+      } else if (sport === "basketball") {
+        return connection.query`
+        INSERT INTO basketball_draft_results (playerId, userId, pickRound, pickNumber, draftId, isDrafted)
         VALUES (${dbModel.playerId}, ${dbModel.userId},
           ${dbModel.pickRound}, ${dbModel.pickNumber},
-          ${dbModel.draftId}, ${dbModel.isDrafted});
-      `;
+          ${dbModel.draftId}, ${dbModel.isDrafted});`;
+      }
+      return undefined;
     }).then((response) => {
       debug(`Player inserted into DB: ${JSON.stringify(response)}`);
     }).catch((error) => {
@@ -265,13 +278,22 @@ class DraftInstance {
         }
 
         new db.ConnectionPool(poolConfig).connect().then((connection) => {
-          return connection.query`
-            UPDATE draft_results
-            SET isDrafted = 0
-            WHERE userId = ${this.currentPickUserId}
-            AND playerId = ${previousPlayer.previousPickPlayerId}
-            AND draftId = ${this.draftId};
-          `;
+          if (sport === "baseball") {
+            return connection.query`
+              UPDATE draft_results
+              SET isDrafted = 0
+              WHERE userId = ${this.currentPickUserId}
+              AND playerId = ${previousPlayer.previousPickPlayerId}
+              AND draftId = ${this.draftId};`;
+          } else if (sport === "basketball") {
+            return connection.query`
+              UPDATE basketball_draft_results
+              SET isDrafted = 0
+              WHERE userId = ${this.currentPickUserId}
+              AND playerId = ${previousPlayer.previousPickPlayerId}
+              AND draftId = ${this.draftId};`;
+          }
+          
         }).then((response) => {
           debug(`Database marked player as not drafted and rolled back: ${JSON.stringify(response)}`);
         }).catch((error) => {

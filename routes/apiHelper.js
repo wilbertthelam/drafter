@@ -1,12 +1,21 @@
 const db = require('mssql');
 const poolConfig = require('./utils/db');
+const sport = require('./utils/currentSport');
+
 
 const getPlayers = () => {
   return new Promise((resolve, reject) => {
     new db.ConnectionPool(poolConfig).connect().then((connection) => {
-      return connection.query`
+      if (sport === "baseball") {
+        return connection.query`
         SELECT * FROM players_rankings_full
         ORDER BY rank;`;
+      } else if (sport === "basketball") {
+        return connection.query`
+        SELECT * FROM basketball_players_rankings_full
+        ORDER BY rank;`;
+      }
+      return undefined;
     }).then((response) => {
       const data = response.recordset;
       return resolve(data);
@@ -38,11 +47,20 @@ const getUsers = (draftId) => {
 const getDraftHistory = (draftId) => {
   return new Promise((resolve, reject) => {
     new db.ConnectionPool(poolConfig).connect().then((connection) => {
-      return connection.query`
-        SELECT * FROM draft_results
-        WHERE draft_results.draftId = ${draftId}
-        AND draft_results.isDrafted = 1
-        ORDER BY pickNumber ASC;`;
+      if (sport === "baseball") {
+        return connection.query`
+          SELECT * FROM draft_results
+          WHERE draft_results.draftId = ${draftId}
+          AND draft_results.isDrafted = 1
+          ORDER BY pickNumber ASC;`;
+      } else if (sport === "basketball") {
+        return connection.query`
+          SELECT * FROM basketball_draft_results
+          WHERE basketball_draft_results.draftId = ${draftId}
+          AND basketball_draft_results.isDrafted = 1
+          ORDER BY pickNumber ASC;`;
+      }
+      return undefined;
     }).then((response) => {
       const data = response.recordset;
       return resolve(data);
@@ -55,10 +73,18 @@ const getDraftHistory = (draftId) => {
 const getCurrentPickIndex = (draftId) => {
   return new Promise((resolve, reject) => {
     new db.ConnectionPool(poolConfig).connect().then((connection) => {
-      return connection.query`
-        SELECT MAX(pickNumber) as max_number FROM draft_results
-        WHERE draftId = ${draftId}
-        AND isDrafted = 1;`;
+      if (sport === "baseball") {
+        return connection.query`
+          SELECT MAX(pickNumber) as max_number FROM draft_results
+          WHERE draftId = ${draftId}
+          AND isDrafted = 1;`;
+      } else if (sport === "basketball") {
+        return connection.query`
+          SELECT MAX(pickNumber) as max_number FROM basketball_draft_results
+          WHERE draftId = ${draftId}
+          AND isDrafted = 1;`;
+      }
+      return undefined;
     }).then((response) => {
       const data = response.recordset;
       return resolve(data);
@@ -71,10 +97,18 @@ const getCurrentPickIndex = (draftId) => {
 const getDraftUserRoster = (draftId) => {
   return new Promise((resolve, reject) => {
     new db.ConnectionPool(poolConfig).connect().then((connection) => {
-      return connection.query`
-        SELECT * FROM draft_results
-        WHERE draftId = ${draftId}
-        AND isDrafted = 1;`;
+      if (sport === "baseball") {
+        return connection.query`
+          SELECT * FROM draft_results
+          WHERE draftId = ${draftId}
+          AND isDrafted = 1;`;
+      } else if (sport === "basketball") {
+        return connection.query`
+          SELECT * FROM basketball_draft_results
+          WHERE draftId = ${draftId}
+          AND isDrafted = 1;`;
+      }
+      return undefined;
     }).then((response) => {
       const data = response.recordset;
       return resolve(data);
