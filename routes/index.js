@@ -18,7 +18,7 @@ router.post('/login', (req, res) => {
 // });
 
 router.get('/draftroom', auth.isAuthenticated, (req, res) => {
-  res.render('index', { title: 'Field of GGreams Fantasy Drafter' });
+  res.render('index', { title: 'Some Dumb Basketball Fantasy Drafter' });
 });
 
 router.get('/main', auth.isAuthenticated, (req, res) => {

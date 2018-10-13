@@ -102,6 +102,22 @@ const draftKeepers = [{
   userId: 19,
   playerId: 53,
   sacrificedPicks: [createSacrificedPick(19, 12)],
+}, {
+  userId: 24,
+  playerId: 39,
+  sacrificedPicks: [createSacrificedPick(24, 6)]
+}, {
+  userId: 24,
+  playerId: 74,
+  sacrificedPicks: [createSacrificedPick(24, 9)]
+}, {
+  userId: 18,
+  playerId: 35,
+  sacrificedPicks: [createSacrificedPick(18, 8)]
+}, {
+  userId: 18,
+  playerId: 37,
+  sacrificedPicks: [createSacrificedPick(18, 9)]
 }];
 
 module.exports = {
