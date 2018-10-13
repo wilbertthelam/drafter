@@ -17,7 +17,7 @@
     "express": "~4.15.5",
     "express-session": "^1.15.6",
     "jade": "~1.11.0",
-    "mssql": "^4.1.0",
+    "lodash": "^4.17.4",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
