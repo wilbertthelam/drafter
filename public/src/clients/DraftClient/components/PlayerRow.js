@@ -153,7 +153,6 @@ const PlayerRow = ({
 
     let playerRow = (
       <div className="standard-row">
-        <div className="rank">ID: {player.id}</div>
         <div className="rank">{player.rank}</div>
         <div className="positions">{player.positions}</div>
         <div className="player-name">
@@ -188,6 +187,7 @@ const PlayerRow = ({
                   <div><div className="stat-label">FG%</div> <div>{player['fg%']}</div></div>
                   <div><div className="stat-label">FT%</div> <div>{player['ft%']}</div></div>
                   <div><div className="stat-label">ADP</div> <div>{player['adp']}</div></div>
+                  <div><div className="stat-label">PlayerId</div> <div>{player['id']}</div></div>
                 </div>
               </div>
             </div>

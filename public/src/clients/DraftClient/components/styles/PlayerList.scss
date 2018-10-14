@@ -3,6 +3,8 @@ $green: #35605A;
 $blue: #6B818C;
 $white: #D8E4FF;
 $highlight: #31E981;
+$light-red: #fbafaf;
+$dark-red: #f67a7a;
 
 .player-searcher {
   ul {
@@ -14,6 +16,13 @@ $highlight: #31E981;
   .scroll-list {
     overflow-y: scroll;
     height: 60rem;
+  }
+
+  .warning-banner {
+    background: $light-red;
+    border: .1rem solid #f67a7a;
+    padding: .5rem;
+    font-size: 1rem;
   }
 
   li {

@@ -78,6 +78,7 @@ class PlayerList extends React.Component {
 
     return (
       <div className="component-boxes player-searcher">
+        <div className="warning-banner">Cross check the positions on ESPN they might be off.</div>
         <div className="search-filter">
           <input
             className="player-search-box"
