@@ -2,7 +2,6 @@ const db = require('mssql');
 const poolConfig = require('./utils/db');
 const sport = require('./utils/currentSport');
 
-
 const getPlayers = () => {
   return new Promise((resolve, reject) => {
     new db.ConnectionPool(poolConfig).connect().then((connection) => {

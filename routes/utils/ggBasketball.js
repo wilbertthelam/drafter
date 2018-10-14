@@ -76,8 +76,8 @@ const draftKeepers = [{
   sacrificedPicks: [createSacrificedPick(26, 10)],
 }, {
   userId: 25,
-  playerId: 59,
-  sacrificedPicks: [createSacrificedPick(25, 13)],
+  playerId: 38,
+  sacrificedPicks: [createSacrificedPick(25, 7)],
 }, {
   userId: 25,
   playerId: 61,

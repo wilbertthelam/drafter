@@ -39,7 +39,7 @@ class ProfileBox extends React.Component {
       <div className={`component-boxes profile-box ${currentUserPickClass}`}>
         <div className="profile-picture">
           <img
-            src="https://pbs.twimg.com/profile_images/597190106647175168/e1_DjZH9_400x400.jpg"
+            src={pickDifference > 0 ? "http://image.cleveland.com/home/cleve-media/width600/img/cavs_impact/photo/lakers-vs-sonics-1989-92290598cfe366cf.jpg" : "http://media.nj.com/knicks_main/photo/10572408-large.jpg"}
             alt="Your profile"
           />
         </div>
